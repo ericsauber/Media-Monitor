@@ -41,7 +41,10 @@ function go() {
                         }
                     }
 
-                    if (!matched) 
+                    if (!matched && word.toLowerCase() !== 'this' 
+                                 && word.toLowerCase() !== 'will' 
+                                 && word.toLowerCase() !== 'most' 
+                                 && word.toLowerCase() !== 'also') 
                         words.push([word.toLowerCase(), 1]);
 
                 }
