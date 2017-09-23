@@ -1,6 +1,24 @@
-#box {
-    background-color: #FFFFFF;
-    margin-top: 15px;
-    padding:10px 10px 10px 10px;
+.left {
+    float: left;
+    width: 33%;
+    background-color: azure;
+}
 
+.left2 {
+    float: left;
+    width: 33%;
+    background-color: cornsilk;
+}
+
+.left3 {
+    float: left;
+    width: 34%;
+    background-color: #B0F0EE;
+}
+
+.middle {
+    width: 80%;
+    padding-top: 15px;
+    margin: auto;
+    /* height:1000px; */
 }
