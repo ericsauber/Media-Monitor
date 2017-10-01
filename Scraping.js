@@ -106,6 +106,14 @@ console.log('Server is running..');
                                     word.toLowerCase() !== 'any' &&
                                     word.toLowerCase() !== 'there' &&
                                     word.toLowerCase() !== 'have' &&
+                                    word.toLowerCase() !== 'may' &&
+                                    word.toLowerCase() !== 'can' &&
+                                    word.toLowerCase() !== 'some' &&
+                                    word.toLowerCase() !== 'more' &&
+                                    word.toLowerCase() !== 'what' &&
+                                    word.toLowerCase() !== 'than' &&
+                                    word.toLowerCase() !== 'such' &&
+                                    word.toLowerCase() !== 'which' &&
                                     word.length >= 3)
                                     words.push([word.toLowerCase(), 1]);
                             }
