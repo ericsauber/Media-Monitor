@@ -1,0 +1,20 @@
+{
+  "name": "media_monitor",
+  "version": "1.0.0",
+  "description": "Get stuff from web articles and do stuff.",
+  "main": "Scraping.js",
+  "dependencies": {
+    "cheerio": "latest",
+    "request": "latest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ericsauber/word-counter.git"
+  },
+  "author": "Team 9",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ericsauber/word-counter/issues"
+  },
+  "homepage": "https://github.com/ericsauber/word-counter#readme"
+}
