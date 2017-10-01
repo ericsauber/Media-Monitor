@@ -7,12 +7,40 @@ var text2 = "";
 var sortedWords;
 var words = [];
 var keyWords = "";
+var URL = "";
 
 var http = require('http');
 var fs = require('fs');
+var express = require('express')
+    app = express();
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
 
-//This specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
-request('https://www.theguardian.com/environment/2017/sep/28/monsanto-banned-from-european-parliament',function(err,resp,body){
+
+app.get('/', function(req, res) {
+    
+    res.sendFile(__dirname + '/index.html');
+
+});
+
+
+
+
+
+server.listen(3000);
+console.log('Server is running..');
+
+io.sockets.on('connection', function(socket) {
+
+    socket.on('send message', function(data) {
+
+        
+        URL = data;
+
+        //console.log(URL);
+
+        //This specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
+request(URL,function(err,resp,body){
     //Basically specified "If retrieved successfully..."
 if(!err && resp.statusCode == 200){
     
@@ -57,6 +85,14 @@ if(!err && resp.statusCode == 200){
                              && word.toLowerCase() !== 'been'
                              && word.toLowerCase() !== 'said'
                              && word.toLowerCase() !== 'its'
+                             && word.toLowerCase() !== 'was'
+                             && word.toLowerCase() !== 'they'
+                             && word.toLowerCase() !== 'had'
+                             && word.toLowerCase() !== 'his'
+                             && word.toLowerCase() !== 'but'
+                             && word.toLowerCase() !== 'one'
+                             && word.toLowerCase() !== 'from'
+                             && word.toLowerCase() !== 'were'
                              && word.length >= 3) 
                     words.push([word.toLowerCase(), 1]);
                 }
@@ -99,8 +135,27 @@ if(!err && resp.statusCode == 200){
         }
     
         console.log(resObj);
+        io.sockets.emit('new message', words);
     }
 });
+
+
+    });
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function compareSecondColumn(b, a) {
@@ -111,6 +166,7 @@ function compareSecondColumn(b, a) {
         return (a[1] < b[1]) ? -1 : 1;
 }
 
+/*
 var server = http.createServer(function(req, res) {
 
     console.log('request was made: ' + req.url);
@@ -121,7 +177,16 @@ var server = http.createServer(function(req, res) {
 
 
 });
+*/
 
-server.listen(3000, '127.0.0.1');
-console.log('Server now running..');
+
+
+
+
+
+
+
+
+
+
 

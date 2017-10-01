@@ -5,7 +5,10 @@
   "main": "Scraping.js",
   "dependencies": {
     "cheerio": "latest",
-    "request": "latest"
+    "request": "latest",
+    "socket.io":"2.0.3",
+    "express":"4.16.1"
+
   },
   "repository": {
     "type": "git",
