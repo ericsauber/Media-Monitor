@@ -1,61 +1,58 @@
 <!DOCTYPE HTML>
-<html>
-    <head>
-    
-    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
-   
-    
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <title>Socket practice</title>
-    <style>
-        #chat{
-            height:500px;
 
+<html>
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheet.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <title>Media Monitor</title>
+</head>
+<body>
+
+    <style>
+        #chat {
+            height: 300px;
+        }
+        
+        body {
+            background-color: #7ED4EE;
+        }
+        
+        input {
+            background-color: #BBEFFF;
         }
     </style>
-</head>
-    
-    <body>
 
-        <div id="chat"></div>
-        <form id="send-message">
+    <div style="text-align:center"><img src="logo.png" /></div>
+    <div style="text-align:center" id="chat"></div>
+
+        <form style="text-align:center" id="send-message">
             <input size="35" id="message"></input>
             <input type="submit"></input>
         </form>
 
-         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-       
-        <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 
-        <script>
-            jQuery(function($) {
-                var socket=io.connect();
-                var $messageForm = $('#send-message');
-                var $messageBox = $('#message');
-                var $chat = $('#chat');
+    <script>
+        var topTen = [];
+        
+        jQuery(function($) {
+            var socket = io.connect();
+            var $messageForm = $('#send-message');
+            var $messageBox = $('#message');
+            var $chat = $('#chat');
 
-                $messageForm.submit(function(e) {
-
-                    e.preventDefault();
-                    socket.emit('send message', $messageBox.val());
-                    $messageBox.val('');
-                });
-
-                socket.on('new message', function(data) {
-
-                    $chat.append(data + "<br/>");
-                });
-
-
-
-
+            $messageForm.submit(function(e) {
+                e.preventDefault();
+                socket.emit('send message', $messageBox.val());
+                $messageBox.val('');
             });
 
-
-
-        </script>
-        
-       
-        
-    </body>
+            socket.on('new message', function(data) {
+                $chat.append(data + "<br/>");
+            });
+        });
+    </script>
+</body>
 </html>

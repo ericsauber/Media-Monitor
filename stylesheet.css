@@ -1,24 +1,11 @@
-.left {
-    float: left;
-    width: 33%;
-    background-color: azure;
+#chat {
+	height:300px;
 }
 
-.left2 {
-    float: left;
-    width: 33%;
-    background-color: cornsilk;
+body {
+	background-color: #7ED4EE;
 }
 
-.left3 {
-    float: left;
-    width: 34%;
-    background-color: #B0F0EE;
-}
-
-.middle {
-    width: 80%;
-    padding-top: 15px;
-    margin: auto;
-    /* height:1000px; */
+input {
+	background-color: #BBEFFF;
 }
