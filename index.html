@@ -6,12 +6,60 @@
     <link rel="stylesheet" href="stylesheet.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <title>Media Monitor</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
 </head>
 <body>
 
+
+    <!-- UGLY CSS STUFF DON'T PAY ATTENTION TO THIS -->
     <style>
-        #chat {
-            height: 300px;
+        #middle {
+            width:80%;
+            margin:auto;
+            opacity: 0.5;
+            text-align:center;
+
+        }
+
+        #leftCol {
+            float: left;
+            padding:15px;
+            opacity: 0.5;
+            width:50%;
+            /*height: 300px;*/
+            font-size:18px;
+            background-color: azure;
+        }
+
+        #rightCol {
+            float: left;
+            padding:15px;
+            opacity: 0.5;
+            width:50%;
+           /* height: 300px;*/
+            font-size:18px;
+            background-color: white;
+        }
+
+        #rating {
+            clear:both;
+            margin:auto;
+            /*padding-top:30px;*/
+            text-align:center;
+            background-color: #BFD6DA;
+            width:80%;
+            /*height:80px;*/
+            visibility:hidden;
+        }
+
+        #urls {
+            clear:both;
+            margin:auto;
+            padding-top:10px;
+            background-color: #6F99A1;
+            height:120px;
         }
         
         body {
@@ -20,28 +68,141 @@
         
         input {
             background-color: #BBEFFF;
+            margin:4px;
         }
+
+        .form-style-6{
+            font: 95% Arial, Helvetica, sans-serif;
+            max-width: 400px;
+            margin: 10px auto;
+            padding: 16px;
+            background: #F7F7F7;
+        }
+        
+        .form-style-6 input[type="text"],
+        .form-style-6 input[type="date"],
+        .form-style-6 input[type="datetime"],
+        .form-style-6 input[type="email"],
+        .form-style-6 input[type="number"],
+        .form-style-6 input[type="search"],
+        .form-style-6 input[type="time"],
+        .form-style-6 input[type="url"],
+        .form-style-6 textarea,
+        .form-style-6 select 
+        {
+            -webkit-transition: all 0.30s ease-in-out;
+            -moz-transition: all 0.30s ease-in-out;
+            -ms-transition: all 0.30s ease-in-out;
+            -o-transition: all 0.30s ease-in-out;
+            outline: none;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            width: 50%;
+            background: #fff;
+            margin-bottom: 4%;
+            border: 1px solid #ccc;
+            padding: 3%;
+            color: #555;
+            font: 95% Arial, Helvetica, sans-serif;
+        }
+        
+        .form-style-6 input[type="text"]:focus,
+        .form-style-6 input[type="date"]:focus,
+        .form-style-6 input[type="datetime"]:focus,
+        .form-style-6 input[type="email"]:focus,
+        .form-style-6 input[type="number"]:focus,
+        .form-style-6 input[type="search"]:focus,
+        .form-style-6 input[type="time"]:focus,
+        .form-style-6 input[type="url"]:focus,
+        .form-style-6 textarea:focus,
+        .form-style-6 select:focus
+        {
+            box-shadow: 0 0 5px #43D1AF;
+            padding: 3%;
+            border: 1px solid #43D1AF;
+        }
+
+        .form-style-6 input[type="submit"],
+        .form-style-6 input[type="button"]{
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            width: 70%;
+            padding: 3%;
+            background: #43D1AF;
+            border-bottom: 2px solid #30C29E;
+            border-top-style: none;
+            border-right-style: none;
+            border-left-style: none;    
+            color: #fff;
+        }
+        
+        .form-style-6 input[type="submit"]:hover,
+        .form-style-6 input[type="button"]:hover{
+            background: #2EBC99;
+        }
+
     </style>
 
+    <!-- END OF CSS -->
+
+
     <div style="text-align:center"><img src="logo.png" /></div>
-    <div style="text-align:center" id="chat"></div>
 
-        <form style="text-align:center" id="send-message">
-            <input size="35" id="message"></input>
-            <input type="submit"></input>
-        </form>
+    <div id="middle">
+        <div id="leftCol"><em>top ten words for URL1</em></div>
+        <div id="rightCol"><em>top ten words for URL2</em></div></div>
+        <div id="rating"><em>rating will go here once we calculate it</em></div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
+    </div>
+
+
+        
+        <div class="form-style-6" id="urls">
+            <form style="text-align:center" id="send-message">
+                <input size="35" style="padding-left: 3px" placeholder="URL 1" id="message"></input><br>
+                <input size="35" style="padding-left: 3px" placeholder="URL 2" id="message2"></input><br>
+                <input type="submit" value="Analyze"></input>
+            </form>
+        </div>
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- JAVASCRIPT PART -->
 
     <script>
         var topTen = [];
+        var topTen2 = [];
+
+        // this allows us to change html/css things with javascript
+        var leftText = document.querySelector("#leftCol");
+        var middleBox = document.querySelector("#middle");
+        var rightText = document.querySelector("#rightCol");
+        var rightText = document.querySelector("#rightCol");
+        var ratingBox = document.querySelector("#rating");
+        var urlBox = document.querySelector("#urls");
+        
         
         jQuery(function($) {
             var socket = io.connect();
             var $messageForm = $('#send-message');
             var $messageBox = $('#message');
-            var $chat = $('#chat');
+            var $left = $('#leftCol');
+            var $right = $('#rightCol');        // haven't used this one yet
 
             $messageForm.submit(function(e) {
                 e.preventDefault();
@@ -49,9 +210,76 @@
                 $messageBox.val('');
             });
 
+
+
+            // we might need to have a second one of these for the right column
             socket.on('new message', function(data) {
-                $chat.append(data + "<br/>");
+                
+                // $('#middle').fadeOut(500);
+                // $('#urls').fadeOut(900);
+                // $('#middle').fadeIn(100);
+                // $('#rating').fadeIn(10000);
+
+             
+
+                // unnecesary things to make it look fancy
+                $("#leftCol").empty()
+
+                leftText.style.opacity = '1';
+                middleBox.style.opacity = '1';
+                middleBox.style.textAlign = 'left';
+                rating.style.visibility = 'visible';
+                rating.style.padding = '15px';
+                urlBox.style.visibility = 'hidden';
+
+
+
+                
+
+                for (var z = 0; z < data.length; z++) {
+                    topTen[z] = data[z];
+                    console.log(topTen[z][0]);
+                    $left.append(z+1 + ". " + topTen[z][0] + "<br>");
+                }
+
+
+
+
+
             });
+
+
+
+
+
+            socket.on('new message2', function(data) {
+                
+               // I guess something like.. ?
+
+               /*
+               for (var z = 0; z < data.length; z++) {
+                    topTen2[z] = data[z];
+                    console.log(topTen2[z][0]);
+                    $right.append(z+1 + ". " + topTen2[z][0] + "<br>");
+                }
+                */
+
+            });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         });
     </script>
 </body>

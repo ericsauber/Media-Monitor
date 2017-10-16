@@ -6,7 +6,7 @@ var express = require('express');
 
 var rawStory = "", all = "", text2 = "", keyWords = "";
 var sortedWords, URL;
-var words = [];
+var words, words2;
 
 app = express();
 
@@ -27,8 +27,6 @@ console.log('Server is running..');
 
 
 
-
-
     // socket.io - everything is running inside this 
     io.sockets.on('connection', function (socket) {
 
@@ -36,6 +34,8 @@ console.log('Server is running..');
 
             // whats getting sent from client is saved as URL
             URL = data;
+            words = [];
+            words2 = [];
 
             // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
             request(URL, function (err, resp, body) {
@@ -149,8 +149,22 @@ console.log('Server is running..');
                     
                     console.log(resObj);
 
-                    io.sockets.emit('new message', resObj.title + "<br>");
+                    //io.sockets.emit('new message', resObj.title + "<br>");
+                    
+
+
+
                     io.sockets.emit('new message', words);
+
+                    /* 
+
+                        I THINK SOMETHING HAS TO GO HERE
+
+                        io.sockets.emit('new message2', words2) or something
+
+
+
+                    */
                 }
             });
         });
