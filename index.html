@@ -201,13 +201,16 @@
             var socket = io.connect();
             var $messageForm = $('#send-message');
             var $messageBox = $('#message');
+            var $messageBox2 = $('#message2');
             var $left = $('#leftCol');
             var $right = $('#rightCol');        // haven't used this one yet
 
             $messageForm.submit(function(e) {
                 e.preventDefault();
                 socket.emit('send message', $messageBox.val());
+                socket.emit('send message2', $messageBox2.val());
                 $messageBox.val('');
+                $messageBox2.val('');
             });
 
 
@@ -232,37 +235,23 @@
                 rating.style.padding = '15px';
                 urlBox.style.visibility = 'hidden';
 
-
-
-                
-
                 for (var z = 0; z < data.length; z++) {
                     topTen[z] = data[z];
                     console.log(topTen[z][0]);
                     $left.append(z+1 + ". " + topTen[z][0] + "<br>");
                 }
-
-
-
-
-
+                
             });
-
-
-
-
 
             socket.on('new message2', function(data) {
                 
-               // I guess something like.. ?
-
-               /*
+                $("#rightCol").empty();
+                
                for (var z = 0; z < data.length; z++) {
                     topTen2[z] = data[z];
                     console.log(topTen2[z][0]);
                     $right.append(z+1 + ". " + topTen2[z][0] + "<br>");
                 }
-                */
 
             });
 
