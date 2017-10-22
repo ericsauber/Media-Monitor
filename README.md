@@ -1,4 +1,5 @@
 Current changes:
+
 1.) Fixed the word returns such as "aren" due to the apostrophe issue (aren't should now be a full word when found)
 2.) Now added a total for each story (data is used only to find total for both currently)
 3.) Now added a total for both stories combined (used to find percentage match)
