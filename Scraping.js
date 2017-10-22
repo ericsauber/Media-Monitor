@@ -64,7 +64,7 @@ function analyzeArticle(data, x) {
 
                 // Grab the main story of the article
                 rawStory = $(title).text();
-                rawStory = rawStory.replace(/[^A-Za-z]/g, ' ');
+                rawStory = rawStory.replace(/[^A-Za-z'-']/g, ' ');
                 rawStory = rawStory.split(' ');
 
                 //Get how many of each word that there is
@@ -208,6 +208,43 @@ function analyzeArticle(data, x) {
                 }
             });
 
+            if(x !== 0) {
+                simCount = 0;
+                tot1 = 0;
+                tot2 = 0;
+                overallTot = 0;
+                percMatch = 0;
+
+                // Finds total amount of words in top 10 for second URL
+                for (var i = 0; i < words.length; i++) {
+                    tot1 += words[i][1];
+                }
+
+                // Finds total amount of words in top 10 for second URL
+                for (var i = 0; i < words2.length; i++) {
+                    tot2 += words2[i][1];
+                }
+
+                // Total amount of words between the two stories (In top 10)
+                overallTot = tot1 + tot2;
+
+                // Sums up total number of matching words in Top 10 for each
+                for (var i = 0; i < words.length; i++) {
+                    for (var j = 0; j < words2.length; j++) {
+                        if (words[i][0].toLowerCase() === words2[j][0]) {
+                            simCount += words[i][1] + words2[j][1];
+                        }
+                    }
+                }
+
+                // Calculated percentage match. Sent directly to the HTML afterwards
+                percMatch = simCount / overallTot * 100;
+
+                ///Data double checking
+                // console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);
+                // console.log("Percentage match is: " + percMatch);
+            }
+
             //Find certain things (title, keywords, etc) in the metadata
             resObj = {};
             $title = $('head title').text(),
@@ -244,6 +281,8 @@ function analyzeArticle(data, x) {
 
                 io.sockets.emit('new message2', words2);
 
+                ///Socket for the percentage match, send to the HTML
+                io.sockets.emit('stats',percMatch);
             }
         }
     });
