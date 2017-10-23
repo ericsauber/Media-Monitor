@@ -7,6 +7,7 @@ var express = require('express');
 var rawStory = "", all = "", text2 = "", keyWords = "";
 var sortedWords, URL;
 var words, words2;
+var sent1 = 0, sent2 = 0;
 
 app = express();
 
@@ -41,6 +42,7 @@ console.log('Server is running..');
             analyzeArticle(data, 1);
 
         });
+        
     });         // end of socket.io 
 
 function analyzeArticle(data, x) {
@@ -116,53 +118,6 @@ function analyzeArticle(data, x) {
                 }
             });
 
-            var simCount = 0;
-            var tot1 = 0;
-            var tot2 = 0;
-            var overallTot;
-            var percMatch;
-            var shortest;
-
-            if(x !== 0) {
-                ///console.log("Before  = "+words.length+","+words2.length);
-
-                if(words.length <= words2.length && words.length !== 0) shortest = words.length;
-                else shortest = words2.length;
-
-
-                ///console.log("Shortest  = " + shortest+","+words.length+","+words2.length);
-
-                // Finds total amount of words in top 10 for second URL
-                for (i = 0; i < shortest; i++) {
-                    tot1 += words[i][1];
-                }
-
-                // Finds total amount of words in top 10 for second URL
-                for (i = 0; i < shortest; i++) {
-                    tot2 += words2[i][1];
-                }
-
-                // Total amount of words between the two stories (In top 10)
-                overallTot = tot1 + tot2;
-
-                // Sums up total number of matching words in Top 10 for each
-                for (var i = 0; i < shortest; i++) {
-                    for (var j = 0; j < shortest; j++) {
-                        if (words[i][0].toLowerCase() === words2[j][0]) {
-                            simCount += words[i][1] + words2[j][1];
-                        }
-                    }
-                }
-
-                // Calculated percentage match. Sent directly to the HTML afterwards
-                percMatch = simCount / overallTot * 100;
-                var percMatchString = percMatch.toFixed(2) + '%';
-
-                //Data double checking
-                ///console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);
-                ///console.log("Percentage match is: " + percMatch);
-            }
-
             //Find certain things (title, keywords, etc) in the metadata
             resObj = {};
             $title = $('head title').text(),
@@ -193,17 +148,76 @@ function analyzeArticle(data, x) {
 
             if (x === 0) {
 
+                sent1 = 1;
                 io.sockets.emit('new message', words);
 
             } else {
 
+                sent2 = 1;
                 io.sockets.emit('new message2', words2);
 
-                ///Socket for the percentage match, send to the HTML
-                io.sockets.emit('stats',percMatchString);
+            }
+
+            //Both URLs must be finished being scraped for comparison to execute.
+            if (sent1 === 1 && sent2 === 1) {
+                comparison();
             }
         }
     });
+}
+
+function comparison() {
+    
+    var simCount = 0;
+    var tot1 = 0;
+    var tot2 = 0;
+    var overallTot;
+    var percMatch;
+    var shortest;
+
+    ///console.log("Before  = "+words.length+","+words2.length);
+
+    if(words.length <= words2.length && words.length !== 0) shortest = words.length;
+    else shortest = words2.length;
+
+
+    ///console.log("Shortest  = " + shortest+","+words.length+","+words2.length);
+
+    // Finds total amount of words in top 10 for first URL
+    for (i = 0; i < shortest; i++) {
+        tot1 += words[i][1];
+    }
+
+    // Finds total amount of words in top 10 for second URL
+    for (i = 0; i < shortest; i++) {
+        tot2 += words2[i][1];
+    }
+
+    // Total amount of words between the two stories (In top 10)
+    overallTot = tot1 + tot2;
+
+    // Sums up total number of matching words in Top 10 for each
+    for (var i = 0; i < shortest; i++) {
+        for (var j = 0; j < shortest; j++) {
+            if (words[i][0].toLowerCase() === words2[j][0]) {
+                simCount += words[i][1] + words2[j][1];
+            }
+        }
+    }
+
+    // Calculated percentage match. Sent directly to the HTML afterwards
+    percMatch = simCount / overallTot * 100;
+    var percMatchString = percMatch.toFixed(2) + '%';
+
+    //Data double checking
+    ///console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);
+    ///console.log("Percentage match is: " + percMatch);
+
+    ///Socket for the percentage match, send to the HTML
+    io.sockets.emit('stats',percMatchString);
+
+    sent1 = 0;
+    sent2 = 0;
 }
 
 function excludeWords(matched, word, x) {
@@ -263,6 +277,7 @@ function excludeWords(matched, word, x) {
     word.toLowerCase() !== 'says' &&
     word.toLowerCase() !== 'being' &&
     word.toLowerCase() !== 'your' &&
+    word.toLowerCase() !== "there's" &&
     word.length >= 3) {
 
         if (x === 0) {
