@@ -236,7 +236,9 @@
                 rating.style.padding = '15px';
                 urlBox.style.visibility = 'hidden';
 
-                for (var z = 0; z < 10; z++) {
+                var z = (data.length > 10 ? 10 : data.length);
+
+                for (; z < 10; z++) {
                     topTen[z] = data[z];
                     console.log(topTen[z][0]);
                     $left.append(z+1 + ". " + topTen[z][0] + "<br>");
@@ -245,10 +247,11 @@
             });
 
             socket.on('new message2', function(data) {
-                
                 $("#rightCol").empty();
+
+                var z = (data.length > 10 ? 10 : data.length);
                 
-               for (var z = 0; z < 10; z++) {
+               for (; z < 10; z++) {
                     topTen2[z] = data[z];
                     console.log(topTen2[z][0]);
                     $right.append(z+1 + ". " + topTen2[z][0] + "<br>");
