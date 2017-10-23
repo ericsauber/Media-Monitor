@@ -208,15 +208,14 @@ function analyzeArticle(data, x) {
                 }
             });
 
+            var simCount = 0;
+            var tot1 = 0;
+            var tot2 = 0;
+            var overallTot;
+            var percMatch;
+            var shortest;
+
             if(x !== 0) {
-                var simCount = 0;
-                var tot1 = 0;
-                var tot2 = 0;
-                var overallTot;
-                var percMatch;
-
-                var shortest;
-
                 ///console.log("Before  = "+words.length+","+words2.length);
 
                 if(words.length <= words2.length && words.length !== 0) shortest = words.length;
@@ -226,12 +225,12 @@ function analyzeArticle(data, x) {
                 ///console.log("Shortest  = " + shortest+","+words.length+","+words2.length);
 
                 // Finds total amount of words in top 10 for second URL
-                for (var i = 0; i < shortest; i++) {
+                for (i = 0; i < shortest; i++) {
                     tot1 += words[i][1];
                 }
 
                 // Finds total amount of words in top 10 for second URL
-                for (var i = 0; i < shortest; i++) {
+                for (i = 0; i < shortest; i++) {
                     tot2 += words2[i][1];
                 }
 
