@@ -204,6 +204,7 @@
             var $messageBox2 = $('#message2');
             var $left = $('#leftCol');
             var $right = $('#rightCol');        // haven't used this one yet
+            var $rate = $('#rating');
 
             $messageForm.submit(function(e) {
                 e.preventDefault();
@@ -235,7 +236,7 @@
                 rating.style.padding = '15px';
                 urlBox.style.visibility = 'hidden';
 
-                for (var z = 0; z < data.length; z++) {
+                for (var z = 0; z < 10; z++) {
                     topTen[z] = data[z];
                     console.log(topTen[z][0]);
                     $left.append(z+1 + ". " + topTen[z][0] + "<br>");
@@ -247,11 +248,20 @@
                 
                 $("#rightCol").empty();
                 
-               for (var z = 0; z < data.length; z++) {
+               for (var z = 0; z < 10; z++) {
                     topTen2[z] = data[z];
                     console.log(topTen2[z][0]);
                     $right.append(z+1 + ". " + topTen2[z][0] + "<br>");
                 }
+
+            });
+
+            ///This is the code that displays the percentage match at the bottom of the website display
+            socket.on('stats',function(data){
+                $("#rating").empty();
+
+                console.log("Percent matching: "+data);
+                $rate.append("Percent matching: "+data+"<br>");
 
             });
 

@@ -64,7 +64,7 @@ function analyzeArticle(data, x) {
 
                 // Grab the main story of the article
                 rawStory = $(title).text();
-                rawStory = rawStory.replace(/[^A-Za-z]/g, ' ');
+                rawStory = rawStory.replace(/[^A-Za-z'-']/g, ' ');
                 rawStory = rawStory.split(' ');
 
                 //Get how many of each word that there is
@@ -134,7 +134,7 @@ function analyzeArticle(data, x) {
     
                 //Sort and get top 10 words
                 words.sort(compareSecondColumn);
-                words = words.slice(0, 10);
+                //words = words.slice(0, 10);
 
                 } else {
 
@@ -203,10 +203,57 @@ function analyzeArticle(data, x) {
     
                 //Sort and get top 10 words
                 words2.sort(compareSecondColumn);
-                words2 = words2.slice(0, 10);
+                //words2 = words2.slice(0, 10);
 
                 }
             });
+
+            if(x !== 0) {
+                var simCount = 0;
+                var tot1 = 0;
+                var tot2 = 0;
+                var overallTot;
+                var percMatch;
+
+                var shortest;
+
+                ///console.log("Before  = "+words.length+","+words2.length);
+
+                if(words.length <= words2.length && words.length !== 0) shortest = words.length;
+                else shortest = words2.length;
+
+
+                ///console.log("Shortest  = " + shortest+","+words.length+","+words2.length);
+
+                // Finds total amount of words in top 10 for second URL
+                for (var i = 0; i < shortest; i++) {
+                    tot1 += words[i][1];
+                }
+
+                // Finds total amount of words in top 10 for second URL
+                for (var i = 0; i < shortest; i++) {
+                    tot2 += words2[i][1];
+                }
+
+                // Total amount of words between the two stories (In top 10)
+                overallTot = tot1 + tot2;
+
+                // Sums up total number of matching words in Top 10 for each
+                for (var i = 0; i < shortest; i++) {
+                    for (var j = 0; j < shortest; j++) {
+                        if (words[i][0].toLowerCase() === words2[j][0]) {
+                            simCount += words[i][1] + words2[j][1];
+                        }
+                    }
+                }
+
+                // Calculated percentage match. Sent directly to the HTML afterwards
+                percMatch = simCount / overallTot * 100;
+
+                //Data double checking
+                ///console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);
+                ///console.log("Percentage match is: " + percMatch);
+            }
 
             //Find certain things (title, keywords, etc) in the metadata
             resObj = {};
@@ -244,6 +291,8 @@ function analyzeArticle(data, x) {
 
                 io.sockets.emit('new message2', words2);
 
+                ///Socket for the percentage match, send to the HTML
+                io.sockets.emit('stats',percMatch);
             }
         }
     });
