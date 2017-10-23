@@ -81,54 +81,8 @@ function analyzeArticle(data, x) {
                                 }
                             }
     
-                            // Excludes words we don't want and words less than 3 chars long.
-                            // Is there a neater way for us to do this??
-                            if (!matched && word.toLowerCase() !== 'this' &&
-                                word.toLowerCase() !== 'will' &&
-                                word.toLowerCase() !== 'most' &&
-                                word.toLowerCase() !== 'also' &&
-                                word.toLowerCase() !== ' ' &&
-                                word.toLowerCase() !== 'the' &&
-                                word.toLowerCase() !== 'for' &&
-                                word.toLowerCase() !== 'and' &&
-                                word.toLowerCase() !== 'too' &&
-                                word.toLowerCase() !== 'into' &&
-                                word.toLowerCase() !== 'that' &&
-                                word.toLowerCase() !== 'has' &&
-                                word.toLowerCase() !== 'been' &&
-                                word.toLowerCase() !== 'said' &&
-                                word.toLowerCase() !== 'its' &&
-                                word.toLowerCase() !== 'was' &&
-                                word.toLowerCase() !== 'they' &&
-                                word.toLowerCase() !== 'had' &&
-                                word.toLowerCase() !== 'his' &&
-                                word.toLowerCase() !== 'but' &&
-                                word.toLowerCase() !== 'one' &&
-                                word.toLowerCase() !== 'from' &&
-                                word.toLowerCase() !== 'were' &&
-                                word.toLowerCase() !== 'with' &&
-                                word.toLowerCase() !== 'you' &&
-                                word.toLowerCase() !== 'over' &&
-                                word.toLowerCase() !== 'her' &&
-                                word.toLowerCase() !== 'their' &&
-                                word.toLowerCase() !== 'she' &&
-                                word.toLowerCase() !== 'not' &&
-                                word.toLowerCase() !== 'who' &&
-                                word.toLowerCase() !== 'are' &&
-                                word.toLowerCase() !== 'about' &&
-                                word.toLowerCase() !== 'any' &&
-                                word.toLowerCase() !== 'there' &&
-                                word.toLowerCase() !== 'have' &&
-                                word.toLowerCase() !== 'may' &&
-                                word.toLowerCase() !== 'can' &&
-                                word.toLowerCase() !== 'some' &&
-                                word.toLowerCase() !== 'more' &&
-                                word.toLowerCase() !== 'what' &&
-                                word.toLowerCase() !== 'than' &&
-                                word.toLowerCase() !== 'such' &&
-                                word.toLowerCase() !== 'which' &&
-                                word.length >= 3)
-                                words.push([word.toLowerCase(), 1]);
+                            excludeWords(matched, word, 0);
+
                         }
                     }
     
@@ -150,54 +104,8 @@ function analyzeArticle(data, x) {
                                 }
                             }
     
-                            // Excludes words we don't want and words less than 3 chars long.
-                            // Is there a neater way for us to do this??
-                            if (!matched && word.toLowerCase() !== 'this' &&
-                                word.toLowerCase() !== 'will' &&
-                                word.toLowerCase() !== 'most' &&
-                                word.toLowerCase() !== 'also' &&
-                                word.toLowerCase() !== ' ' &&
-                                word.toLowerCase() !== 'the' &&
-                                word.toLowerCase() !== 'for' &&
-                                word.toLowerCase() !== 'and' &&
-                                word.toLowerCase() !== 'too' &&
-                                word.toLowerCase() !== 'into' &&
-                                word.toLowerCase() !== 'that' &&
-                                word.toLowerCase() !== 'has' &&
-                                word.toLowerCase() !== 'been' &&
-                                word.toLowerCase() !== 'said' &&
-                                word.toLowerCase() !== 'its' &&
-                                word.toLowerCase() !== 'was' &&
-                                word.toLowerCase() !== 'they' &&
-                                word.toLowerCase() !== 'had' &&
-                                word.toLowerCase() !== 'his' &&
-                                word.toLowerCase() !== 'but' &&
-                                word.toLowerCase() !== 'one' &&
-                                word.toLowerCase() !== 'from' &&
-                                word.toLowerCase() !== 'were' &&
-                                word.toLowerCase() !== 'with' &&
-                                word.toLowerCase() !== 'you' &&
-                                word.toLowerCase() !== 'over' &&
-                                word.toLowerCase() !== 'her' &&
-                                word.toLowerCase() !== 'their' &&
-                                word.toLowerCase() !== 'she' &&
-                                word.toLowerCase() !== 'not' &&
-                                word.toLowerCase() !== 'who' &&
-                                word.toLowerCase() !== 'are' &&
-                                word.toLowerCase() !== 'about' &&
-                                word.toLowerCase() !== 'any' &&
-                                word.toLowerCase() !== 'there' &&
-                                word.toLowerCase() !== 'have' &&
-                                word.toLowerCase() !== 'may' &&
-                                word.toLowerCase() !== 'can' &&
-                                word.toLowerCase() !== 'some' &&
-                                word.toLowerCase() !== 'more' &&
-                                word.toLowerCase() !== 'what' &&
-                                word.toLowerCase() !== 'than' &&
-                                word.toLowerCase() !== 'such' &&
-                                word.toLowerCase() !== 'which' &&
-                                word.length >= 3)
-                                words2.push([word.toLowerCase(), 1]);
+                            excludeWords(matched, word, 1);
+                            
                         }
                     }
     
@@ -248,6 +156,7 @@ function analyzeArticle(data, x) {
 
                 // Calculated percentage match. Sent directly to the HTML afterwards
                 percMatch = simCount / overallTot * 100;
+                var percMatchString = percMatch.toFixed(2) + '%';
 
                 //Data double checking
                 ///console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);
@@ -291,12 +200,78 @@ function analyzeArticle(data, x) {
                 io.sockets.emit('new message2', words2);
 
                 ///Socket for the percentage match, send to the HTML
-                io.sockets.emit('stats',percMatch);
+                io.sockets.emit('stats',percMatchString);
             }
         }
     });
 }
 
+function excludeWords(matched, word, x) {
+    // Excludes words we don't want and words less than 3 chars long.
+    // Is there a neater way for us to do this??
+    if (!matched && word.toLowerCase() !== 'this' &&
+    word.toLowerCase() !== 'will' &&
+    word.toLowerCase() !== 'most' &&
+    word.toLowerCase() !== 'also' &&
+    word.toLowerCase() !== ' ' &&
+    word.toLowerCase() !== 'the' &&
+    word.toLowerCase() !== 'for' &&
+    word.toLowerCase() !== 'and' &&
+    word.toLowerCase() !== 'too' &&
+    word.toLowerCase() !== 'into' &&
+    word.toLowerCase() !== 'that' &&
+    word.toLowerCase() !== 'has' &&
+    word.toLowerCase() !== 'been' &&
+    word.toLowerCase() !== 'said' &&
+    word.toLowerCase() !== 'its' &&
+    word.toLowerCase() !== 'was' &&
+    word.toLowerCase() !== 'they' &&
+    word.toLowerCase() !== 'had' &&
+    word.toLowerCase() !== 'his' &&
+    word.toLowerCase() !== 'but' &&
+    word.toLowerCase() !== 'one' &&
+    word.toLowerCase() !== 'from' &&
+    word.toLowerCase() !== 'were' &&
+    word.toLowerCase() !== 'with' &&
+    word.toLowerCase() !== 'you' &&
+    word.toLowerCase() !== 'over' &&
+    word.toLowerCase() !== 'her' &&
+    word.toLowerCase() !== 'their' &&
+    word.toLowerCase() !== 'she' &&
+    word.toLowerCase() !== 'not' &&
+    word.toLowerCase() !== 'who' &&
+    word.toLowerCase() !== 'are' &&
+    word.toLowerCase() !== 'about' &&
+    word.toLowerCase() !== 'any' &&
+    word.toLowerCase() !== 'there' &&
+    word.toLowerCase() !== 'have' &&
+    word.toLowerCase() !== 'may' &&
+    word.toLowerCase() !== 'can' &&
+    word.toLowerCase() !== 'some' &&
+    word.toLowerCase() !== 'more' &&
+    word.toLowerCase() !== 'what' &&
+    word.toLowerCase() !== 'than' &&
+    word.toLowerCase() !== 'such' &&
+    word.toLowerCase() !== 'which' &&
+    word.toLowerCase() !== 'all' &&
+    word.toLowerCase() !== 'tried' &&
+    word.toLowerCase() !== "it'll" && 
+    word.toLowerCase() !== 'could' &&
+    word.toLowerCase() !== "it's" &&
+    word.toLowerCase() !== 'really' &&
+    word.toLowerCase() !== 'like' &&
+    word.toLowerCase() !== 'says' &&
+    word.toLowerCase() !== 'being' &&
+    word.toLowerCase() !== 'your' &&
+    word.length >= 3) {
+
+        if (x === 0) {
+            words.push([word.toLowerCase(), 1]);
+        } else {
+            words2.push([word.toLowerCase(), 1]);
+        }
+    }
+}
 
 function compareSecondColumn(b, a) {
 
