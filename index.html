@@ -46,12 +46,12 @@
         #rating {
             clear:both;
             margin:auto;
-            /*padding-top:30px;*/
+            padding-top:15px;
             text-align:center;
             background-color: #BFD6DA;
             width:80%;
-            /*height:80px;*/
-            visibility:hidden;
+            height:40px;
+            /*visibility:hidden;*/
         }
 
         #urls {
@@ -152,9 +152,8 @@
 
     <div id="middle">
         <div id="leftCol"><em>top ten words for URL1</em></div>
-        <div id="rightCol"><em>top ten words for URL2</em></div></div>
+        <div id="rightCol"><em>top ten words for URL2</em></div>
         <div id="rating"><em>rating will go here once we calculate it</em></div>
-
     </div>
 
 
@@ -263,8 +262,8 @@
             socket.on('stats',function(data){
                 $("#rating").empty();
 
-                console.log("Percent matching: "+data);
-                $rate.append("Percent matching: "+data+"<br>");
+                console.log(data);
+                $rate.append(data+"<br>");
 
             });
 

@@ -8,6 +8,8 @@ var rawStory = "", all = "", text2 = "", keyWords = "";
 var sortedWords, URL;
 var words, words2;
 var sent1 = 0, sent2 = 0;
+var error1 = 0, error2 = 0;
+var checked1 = 0, checked2 = 0;
 
 app = express();
 
@@ -33,12 +35,16 @@ console.log('Server is running..');
 
         socket.on('send message', function (data) {
 
+            error1 = 0, checked1 = 0;
+            words = [];
             analyzeArticle(data, 0);
 
         });
 
         socket.on('send message2', function (data) {
 
+            error2 = 0, checked2 = 0;
+            words2 = [];
             analyzeArticle(data, 1);
 
         });
@@ -48,122 +54,172 @@ console.log('Server is running..');
 function analyzeArticle(data, x) {
     // whats getting sent from client is saved as URL
     URL = data;
-    words = [];
-    words2 = [];
 
-    // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
-    request(URL, function (err, resp, body) {
+    if (x === 0) {
         
-        // If retrieved successfully
-        if (!err && resp.statusCode == 200) {
-
-            //This uses jQuery format, just loads th4e body of the HTML into this variable
-            var $ = cheerio.load(body);
-            var resObj = {};
-
-            //Find everything with a p tag
-            $('p').each(function (index, title) {
-
-                // Grab the main story of the article
-                rawStory = $(title).text();
-                rawStory = rawStory.replace(/[^A-Za-z'-']/g, ' ');
-                rawStory = rawStory.split(' ');
-
-                //Get how many of each word that there is
-                if (x === 0) {
-                    if (rawStory.length) {
-                        for (var i = 0, length = rawStory.length; i < length; i += 1) {
-                            var matched = false,
-                                word = rawStory[i];
+    } else {
+        
+    }
     
-                            for (var j = 0, numberOfWords = words.length; j < numberOfWords; j += 1) {
-                                if (words[j][0].toLowerCase() === word.toLowerCase()) {
-                                    matched = true;
-                                    words[j][1] += 1;
+    if (isValidUrl(URL, x)) {
+
+        console.log('isvalidurl' + x);
+    
+        // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
+        request(URL, function (err, resp, body) {
+            
+            // If retrieved successfully
+            if (!err && resp.statusCode == 200) {
+    
+                //This uses jQuery format, just loads th4e body of the HTML into this variable
+                var $ = cheerio.load(body);
+                var resObj = {};
+    
+                //Find everything with a p tag
+                $('p').each(function (index, title) {
+    
+                    // Grab the main story of the article
+                    rawStory = $(title).text();
+                    rawStory = rawStory.replace(/[^A-Za-z'-']/g, ' ');
+                    rawStory = rawStory.split(' ');
+    
+                    //Get how many of each word that there is
+                    if (x === 0) {
+                        if (rawStory.length) {
+                            for (var i = 0, length = rawStory.length; i < length; i += 1) {
+                                var matched = false,
+                                    word = rawStory[i];
+        
+                                for (var j = 0, numberOfWords = words.length; j < numberOfWords; j += 1) {
+                                    if (words[j][0].toLowerCase() === word.toLowerCase()) {
+                                        matched = true;
+                                        words[j][1] += 1;
+                                    }
                                 }
+        
+                                excludeWords(matched, word, 0);
+    
                             }
-    
-                            excludeWords(matched, word, 0);
-
                         }
-                    }
+        
+                    //Sort and get top 10 words
+                    words.sort(compareSecondColumn);
+                    //words = words.slice(0, 10);
     
-                //Sort and get top 10 words
-                words.sort(compareSecondColumn);
-                //words = words.slice(0, 10);
-
-                } else {
-
-                    if (rawStory.length) {
-                        for (var i = 0, length = rawStory.length; i < length; i += 1) {
-                            var matched = false,
-                                word = rawStory[i];
+                    } else {
     
-                            for (var j = 0, numberOfWords = words2.length; j < numberOfWords; j += 1) {
-                                if (words2[j][0].toLowerCase() === word.toLowerCase()) {
-                                    matched = true;
-                                    words2[j][1] += 1;
+                        if (rawStory.length) {
+                            for (var i = 0, length = rawStory.length; i < length; i += 1) {
+                                var matched = false,
+                                    word = rawStory[i];
+        
+                                for (var j = 0, numberOfWords = words2.length; j < numberOfWords; j += 1) {
+                                    if (words2[j][0].toLowerCase() === word.toLowerCase()) {
+                                        matched = true;
+                                        words2[j][1] += 1;
+                                    }
                                 }
+        
+                                excludeWords(matched, word, 1);
+                                
                             }
-    
-                            excludeWords(matched, word, 1);
-                            
                         }
-                    }
+        
+                    //Sort and get top 10 words
+                    words2.sort(compareSecondColumn);
+                    //words2 = words2.slice(0, 10);
     
-                //Sort and get top 10 words
-                words2.sort(compareSecondColumn);
-                //words2 = words2.slice(0, 10);
-
+                    }
+                });
+    
+                //Find certain things (title, keywords, etc) in the metadata
+                resObj = {};
+                $title = $('head title').text(),
+                    $desc = $('meta[name="description"]').attr('content'),
+                    $kwd = $('meta[name="keywords"]').attr('content'),
+                    $ogTitle = $('meta[property="og:title"]').attr('content'),
+                    $ogkeywords = $('meta[property="og:keywords"]').attr('content');
+    
+                if ($title) 
+                    resObj.title = $title;
+    
+                if ($desc)
+                    resObj.description = $desc;
+                
+                if ($kwd) 
+                    resObj.keywords = $kwd;
+    
+                //if ($ogTitle && $ogTitle.length) 
+                  //  resObj.ogTitle = $ogTitle;
+    
+                //if ($ogkeywords && $ogkeywords.length) 
+                    //resObj.ogkeywords = $ogkeywords;
+                
+                console.log(resObj);
+    
+                //io.sockets.emit('new message', resObj.title + "<br>");
+                
+    
+                if (error1 === 0 && error2 === 0) {
+                    if (x === 0) {
+                        
+                        sent1 = 1;
+                        io.sockets.emit('new message', words);
+                        
+                    } else {
+                        
+                        sent2 = 1;
+                        io.sockets.emit('new message2', words2);
+                        
+                    }
                 }
-            });
-
-            //Find certain things (title, keywords, etc) in the metadata
-            resObj = {};
-            $title = $('head title').text(),
-                $desc = $('meta[name="description"]').attr('content'),
-                $kwd = $('meta[name="keywords"]').attr('content'),
-                $ogTitle = $('meta[property="og:title"]').attr('content'),
-                $ogkeywords = $('meta[property="og:keywords"]').attr('content');
-
-            if ($title) 
-                resObj.title = $title;
-
-            if ($desc)
-                resObj.description = $desc;
-            
-            if ($kwd) 
-                resObj.keywords = $kwd;
-
-            //if ($ogTitle && $ogTitle.length) 
-              //  resObj.ogTitle = $ogTitle;
-
-            //if ($ogkeywords && $ogkeywords.length) 
-                //resObj.ogkeywords = $ogkeywords;
-            
-            console.log(resObj);
-
-            //io.sockets.emit('new message', resObj.title + "<br>");
-            
-
-            if (x === 0) {
-
-                sent1 = 1;
-                io.sockets.emit('new message', words);
-
-            } else {
-
-                sent2 = 1;
-                io.sockets.emit('new message2', words2);
-
+    
+                //Both URLs must be finished being scraped for comparison to execute.
+                if (sent1 === 1 && sent2 === 1 && words !== null && words2 !== null) {
+                    comparison();
+                }
             }
+        });
+    } else {
 
-            //Both URLs must be finished being scraped for comparison to execute.
-            if (sent1 === 1 && sent2 === 1) {
-                comparison();
+        console.log('notValid' + x);
+        var error = 'Error';
+        
+        if (x === 0) 
+            error1 = 1;
+        else 
+            error2 = 1;
+
+        if (checked1 === 1 && checked2 === 1) {
+            
+            if (error1 === 1 && error2 === 1) {
+                console.log('both invalid');
+                error = 'Url one and two are invalid.';
+                io.sockets.emit('stats', error);
+    
+            } else if (error1 === 1 && error2 === 0) {
+                console.log('one invalid');
+                error = 'Url one is invalid.';
+                io.sockets.emit('stats', error);
+    
+            } else {
+                console.log('two invalid');
+                error = 'Url two is invalid.';
+                io.sockets.emit('stats', error);
+    
             }
         }
-    });
+    }
+}
+
+function isValidUrl(url, x) {
+
+    if (x === 0) 
+        checked1 = 1;
+    else 
+        checked2 = 1;
+    return /^(?:(?:(?:https?|ftp):)?\/\/)(?:\S+(?::\S*)?@)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:[/?#]\S*)?$/i.test(url);
+
 }
 
 function comparison() {
@@ -207,7 +263,7 @@ function comparison() {
 
     // Calculated percentage match. Sent directly to the HTML afterwards
     percMatch = simCount / overallTot * 100;
-    var percMatchString = percMatch.toFixed(2) + '%';
+    var percMatchString = 'Percent matching: ' + percMatch.toFixed(2) + '%';
 
     //Data double checking
     ///console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);
