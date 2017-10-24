@@ -4,10 +4,13 @@ var http = require('http');
 var fs = require('fs');
 var express = require('express');
 
-var rawStory = "", all = "", text2 = "", keyWords = "";
-var sortedWords, URL;
-var words, words2;
-var sent1 = 0, sent2 = 0;
+var rawStory = "",
+    all = "",
+    text2 = "",
+    keyWords = "";
+var sortedWords, URL, words, words2;
+var sent1 = 0,
+    sent2 = 0;
 
 app = express();
 
@@ -28,22 +31,22 @@ console.log('Server is running..');
 
 
 
-    // socket.io - everything is running inside this 
-    io.sockets.on('connection', function (socket) {
+// socket.io - everything is running inside this 
+io.sockets.on('connection', function (socket) {
 
-        socket.on('send message', function (data) {
+    socket.on('send message', function (data) {
 
-            analyzeArticle(data, 0);
+        analyzeArticle(data, 0);
 
-        });
+    });
 
-        socket.on('send message2', function (data) {
+    socket.on('send message2', function (data) {
 
-            analyzeArticle(data, 1);
+        analyzeArticle(data, 1);
 
-        });
-        
-    });         // end of socket.io 
+    });
+
+}); // end of socket.io 
 
 function analyzeArticle(data, x) {
     // whats getting sent from client is saved as URL
@@ -53,7 +56,7 @@ function analyzeArticle(data, x) {
 
     // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
     request(URL, function (err, resp, body) {
-        
+
         // If retrieved successfully
         if (!err && resp.statusCode == 200) {
 
@@ -75,22 +78,21 @@ function analyzeArticle(data, x) {
                         for (var i = 0, length = rawStory.length; i < length; i += 1) {
                             var matched = false,
                                 word = rawStory[i];
-    
+
                             for (var j = 0, numberOfWords = words.length; j < numberOfWords; j += 1) {
                                 if (words[j][0].toLowerCase() === word.toLowerCase()) {
                                     matched = true;
                                     words[j][1] += 1;
                                 }
                             }
-    
-                            excludeWords(matched, word, 0);
 
+                            excludeWords(matched, word, 0);
                         }
                     }
-    
-                //Sort and get top 10 words
-                words.sort(compareSecondColumn);
-                //words = words.slice(0, 10);
+
+                    //Sort and get top 10 words
+                    words.sort(compareSecondColumn);
+                    //words = words.slice(0, 10);
 
                 } else {
 
@@ -98,23 +100,21 @@ function analyzeArticle(data, x) {
                         for (var i = 0, length = rawStory.length; i < length; i += 1) {
                             var matched = false,
                                 word = rawStory[i];
-    
+
                             for (var j = 0, numberOfWords = words2.length; j < numberOfWords; j += 1) {
                                 if (words2[j][0].toLowerCase() === word.toLowerCase()) {
                                     matched = true;
                                     words2[j][1] += 1;
                                 }
                             }
-    
+
                             excludeWords(matched, word, 1);
-                            
                         }
                     }
-    
-                //Sort and get top 10 words
-                words2.sort(compareSecondColumn);
-                //words2 = words2.slice(0, 10);
 
+                    //Sort and get top 10 words
+                    words2.sort(compareSecondColumn);
+                    //words2 = words2.slice(0, 10);
                 }
             });
 
@@ -126,36 +126,25 @@ function analyzeArticle(data, x) {
                 $ogTitle = $('meta[property="og:title"]').attr('content'),
                 $ogkeywords = $('meta[property="og:keywords"]').attr('content');
 
-            if ($title) 
+            if ($title)
                 resObj.title = $title;
 
             if ($desc)
                 resObj.description = $desc;
-            
-            if ($kwd) 
+
+            if ($kwd)
                 resObj.keywords = $kwd;
 
-            //if ($ogTitle && $ogTitle.length) 
-              //  resObj.ogTitle = $ogTitle;
-
-            //if ($ogkeywords && $ogkeywords.length) 
-                //resObj.ogkeywords = $ogkeywords;
-            
             console.log(resObj);
 
-            //io.sockets.emit('new message', resObj.title + "<br>");
-            
+
 
             if (x === 0) {
-
                 sent1 = 1;
                 io.sockets.emit('new message', words);
-
             } else {
-
                 sent2 = 1;
                 io.sockets.emit('new message2', words2);
-
             }
 
             //Both URLs must be finished being scraped for comparison to execute.
@@ -167,7 +156,7 @@ function analyzeArticle(data, x) {
 }
 
 function comparison() {
-    
+
     var simCount = 0;
     var tot1 = 0;
     var tot2 = 0;
@@ -177,7 +166,7 @@ function comparison() {
 
     ///console.log("Before  = "+words.length+","+words2.length);
 
-    if(words.length <= words2.length && words.length !== 0) shortest = words.length;
+    if (words.length <= words2.length && words.length !== 0) shortest = words.length;
     else shortest = words2.length;
 
 
@@ -214,7 +203,7 @@ function comparison() {
     ///console.log("Percentage match is: " + percMatch);
 
     ///Socket for the percentage match, send to the HTML
-    io.sockets.emit('stats',percMatchString);
+    io.sockets.emit('stats', percMatchString);
 
     sent1 = 0;
     sent2 = 0;
@@ -224,61 +213,61 @@ function excludeWords(matched, word, x) {
     // Excludes words we don't want and words less than 3 chars long.
     // Is there a neater way for us to do this??
     if (!matched && word.toLowerCase() !== 'this' &&
-    word.toLowerCase() !== 'will' &&
-    word.toLowerCase() !== 'most' &&
-    word.toLowerCase() !== 'also' &&
-    word.toLowerCase() !== ' ' &&
-    word.toLowerCase() !== 'the' &&
-    word.toLowerCase() !== 'for' &&
-    word.toLowerCase() !== 'and' &&
-    word.toLowerCase() !== 'too' &&
-    word.toLowerCase() !== 'into' &&
-    word.toLowerCase() !== 'that' &&
-    word.toLowerCase() !== 'has' &&
-    word.toLowerCase() !== 'been' &&
-    word.toLowerCase() !== 'said' &&
-    word.toLowerCase() !== 'its' &&
-    word.toLowerCase() !== 'was' &&
-    word.toLowerCase() !== 'they' &&
-    word.toLowerCase() !== 'had' &&
-    word.toLowerCase() !== 'his' &&
-    word.toLowerCase() !== 'but' &&
-    word.toLowerCase() !== 'one' &&
-    word.toLowerCase() !== 'from' &&
-    word.toLowerCase() !== 'were' &&
-    word.toLowerCase() !== 'with' &&
-    word.toLowerCase() !== 'you' &&
-    word.toLowerCase() !== 'over' &&
-    word.toLowerCase() !== 'her' &&
-    word.toLowerCase() !== 'their' &&
-    word.toLowerCase() !== 'she' &&
-    word.toLowerCase() !== 'not' &&
-    word.toLowerCase() !== 'who' &&
-    word.toLowerCase() !== 'are' &&
-    word.toLowerCase() !== 'about' &&
-    word.toLowerCase() !== 'any' &&
-    word.toLowerCase() !== 'there' &&
-    word.toLowerCase() !== 'have' &&
-    word.toLowerCase() !== 'may' &&
-    word.toLowerCase() !== 'can' &&
-    word.toLowerCase() !== 'some' &&
-    word.toLowerCase() !== 'more' &&
-    word.toLowerCase() !== 'what' &&
-    word.toLowerCase() !== 'than' &&
-    word.toLowerCase() !== 'such' &&
-    word.toLowerCase() !== 'which' &&
-    word.toLowerCase() !== 'all' &&
-    word.toLowerCase() !== 'tried' &&
-    word.toLowerCase() !== "it'll" && 
-    word.toLowerCase() !== 'could' &&
-    word.toLowerCase() !== "it's" &&
-    word.toLowerCase() !== 'really' &&
-    word.toLowerCase() !== 'like' &&
-    word.toLowerCase() !== 'says' &&
-    word.toLowerCase() !== 'being' &&
-    word.toLowerCase() !== 'your' &&
-    word.toLowerCase() !== "there's" &&
-    word.length >= 3) {
+        word.toLowerCase() !== 'will' &&
+        word.toLowerCase() !== 'most' &&
+        word.toLowerCase() !== 'also' &&
+        word.toLowerCase() !== ' ' &&
+        word.toLowerCase() !== 'the' &&
+        word.toLowerCase() !== 'for' &&
+        word.toLowerCase() !== 'and' &&
+        word.toLowerCase() !== 'too' &&
+        word.toLowerCase() !== 'into' &&
+        word.toLowerCase() !== 'that' &&
+        word.toLowerCase() !== 'has' &&
+        word.toLowerCase() !== 'been' &&
+        word.toLowerCase() !== 'said' &&
+        word.toLowerCase() !== 'its' &&
+        word.toLowerCase() !== 'was' &&
+        word.toLowerCase() !== 'they' &&
+        word.toLowerCase() !== 'had' &&
+        word.toLowerCase() !== 'his' &&
+        word.toLowerCase() !== 'but' &&
+        word.toLowerCase() !== 'one' &&
+        word.toLowerCase() !== 'from' &&
+        word.toLowerCase() !== 'were' &&
+        word.toLowerCase() !== 'with' &&
+        word.toLowerCase() !== 'you' &&
+        word.toLowerCase() !== 'over' &&
+        word.toLowerCase() !== 'her' &&
+        word.toLowerCase() !== 'their' &&
+        word.toLowerCase() !== 'she' &&
+        word.toLowerCase() !== 'not' &&
+        word.toLowerCase() !== 'who' &&
+        word.toLowerCase() !== 'are' &&
+        word.toLowerCase() !== 'about' &&
+        word.toLowerCase() !== 'any' &&
+        word.toLowerCase() !== 'there' &&
+        word.toLowerCase() !== 'have' &&
+        word.toLowerCase() !== 'may' &&
+        word.toLowerCase() !== 'can' &&
+        word.toLowerCase() !== 'some' &&
+        word.toLowerCase() !== 'more' &&
+        word.toLowerCase() !== 'what' &&
+        word.toLowerCase() !== 'than' &&
+        word.toLowerCase() !== 'such' &&
+        word.toLowerCase() !== 'which' &&
+        word.toLowerCase() !== 'all' &&
+        word.toLowerCase() !== 'tried' &&
+        word.toLowerCase() !== "it'll" &&
+        word.toLowerCase() !== 'could' &&
+        word.toLowerCase() !== "it's" &&
+        word.toLowerCase() !== 'really' &&
+        word.toLowerCase() !== 'like' &&
+        word.toLowerCase() !== 'says' &&
+        word.toLowerCase() !== 'being' &&
+        word.toLowerCase() !== 'your' &&
+        word.toLowerCase() !== "there's" &&
+        word.length >= 3) {
 
         if (x === 0) {
             words.push([word.toLowerCase(), 1]);
