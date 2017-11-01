@@ -11,6 +11,12 @@ var rawStory = "",
 var sortedWords, URL, words, words2;
 var sent1 = 0,
     sent2 = 0;
+var title1 = '', 
+    title2 = '';
+var articles1 = [], 
+    articles2 = [];
+var titleSource1 = '', 
+    titleSource2 = '';
 
 app = express();
 
@@ -53,6 +59,14 @@ function analyzeArticle(data, x) {
     URL = data;
     words = [];
     words2 = [];
+
+    if (x === 0) {
+        titleSource1 = getHost(URL);
+        console.log(titleSource1);
+    } else {
+        titleSource2 = getHost(URL);
+        console.log(titleSource2);
+    }
 
     // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
     request(URL, function (err, resp, body) {
@@ -132,6 +146,19 @@ function analyzeArticle(data, x) {
             if ($desc)
                 resObj.description = $desc;
 
+            if (x === 0) {
+                title1 = $title.slice(0, $title.length/1.5).split(' ').join('+');
+            } else {
+                title2 = $title.slice(0, $title.length/1.5).split(' ').join('+');
+            }
+
+            //if ($ogTitle && $ogTitle.length) 
+                //  resObj.ogTitle = $ogTitle;
+
+            //if ($ogkeywords && $ogkeywords.length) 
+                //resObj.ogkeywords = $ogkeywords;
+            
+            //console.log(resObj);
             if ($kwd)
                 resObj.keywords = $kwd;
 
@@ -150,10 +177,80 @@ function analyzeArticle(data, x) {
             //Both URLs must be finished being scraped for comparison to execute.
             if (sent1 === 1 && sent2 === 1) {
                 comparison();
+                similarArticles(title1, 0);
+                similarArticles(title2, 1);
             }
         }
     });
 }
+
+//Gets host name from url
+function getHost(URL) {
+    var host;
+
+    if (URL.indexOf('://') > -1) {
+        host = URL.split('/')[2];
+    } else {
+        host = URL.split('/')[0];
+    }
+
+    host = host.split(':')[0];
+    host = host.split('?')[0];
+
+    return host;
+}
+
+//Finds similar articles
+function similarArticles(title, x) {
+    //Queries google using the title of the article
+    var query = 'https://www.google.com/search?q=' + title;
+    var done1 = 0, done2 = 0;
+
+    // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
+    request(query, function (err, resp, body) {
+        
+        // If retrieved successfully
+        if (!err && resp.statusCode == 200) {
+
+            //This uses jQuery format, just loads th4e body of the HTML into this variable
+            var $ = cheerio.load(body);
+
+            i = 0;
+            
+            //Find everything with a h3.r tag
+            $('h3.r').each(function (index, element) {
+                //Retrieves the link to the article from the href tag
+                var a = $(this).children();
+                var url = a.attr('href');
+                url = url.replace('/url?q=', '');
+
+                //Adds first three urls to list if they're not from youtube or a search
+                if (url.indexOf('youtube') === -1 && url.indexOf('search') === -1 && i <= 2) {
+
+                    //Makes sure original article doesn't show in similar articles
+                    if (x === 0 && url.indexOf(titleSource1) === -1) {
+                        articles1[i] = url;
+                        if (i === 2) {
+                            io.sockets.emit('similarArticles1', articles1);
+                            console.log(articles1);
+                        }
+                        i++;
+                    } else if (x === 1 && url.indexOf(titleSource2) === -1) {
+                        articles2[i] = url;
+                        if (i === 2) {
+                            io.sockets.emit('similarArticles2', articles2);
+                            console.log(articles2);
+                        }
+                        i++;
+                    }
+                }
+            });
+        }
+    });
+}
+            
+            
+
 
 function comparison() {
 

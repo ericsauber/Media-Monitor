@@ -24,6 +24,13 @@
             text-align: center;
         }
         
+        #middle2 {
+            width:90%;
+            margin:auto;
+            opacity: 0.5;
+            text-align:center;
+        }
+        
         #leftCol {
             float: left;
             padding: 15px;
@@ -51,6 +58,24 @@
             background-color: #BFD6DA;
             width: 80%;
             visibility: hidden;
+        }
+
+        #sim1 {
+            float: left;
+            padding:15px;
+            opacity: 0.5;
+            width:50%;
+            font-size:18px;
+            background-color: white;
+        }
+        
+        #sim2 {
+            float: left;
+            padding:15px;
+            opacity: 0.5;
+            width:50%;
+            font-size:18px;
+            background-color: white;
         }
         
         #urls {
@@ -154,6 +179,10 @@
     <div id="rating"><em>rating will go here once we calculate it</em></div>
 
     </div>
+    <div id="middle2">
+        <div id="sim1"><em>similar articles for URL1</em></div>
+        <div id="sim2"><em>similar articles for URL2</em></div>
+</div>
 
 
 
@@ -184,9 +213,13 @@
         var rightText = document.querySelector("#rightCol");
         var rightText = document.querySelector("#rightCol");
         var ratingBox = document.querySelector("#rating");
+        var leftSimArt1 = document.querySelector("#sim1");
+        var rightSimArt2 = document.querySelector("#sim2");
         var urlBox = document.querySelector("#urls");
         var topTen = [];
         var topTen2 = [];
+        var simArts1 = [];
+        var simArts2 = [];
 
         $("#logo").hide(0).fadeIn(250);
         $("#middle").hide(0).fadeIn(450);
@@ -200,6 +233,9 @@
             var $left = $('#leftCol');
             var $right = $('#rightCol'); // haven't used this one yet
             var $rate = $('#rating');
+            var $simArt1 = $('#sim1');
+            var $simArt2 = $('#sim2');
+
 
             $messageForm.submit(function(e) {
                 e.preventDefault();
@@ -257,6 +293,27 @@
                 }
             });
 
+            //Displays similar articles for first article
+            socket.on('similarArticles1', function(data) {
+                $("#sim1").empty();
+                $simArt1.append('Similar Articles:<br>');
+
+                for (var z = 0; z <= 2; z++) {
+                    simArts1[z] = data[z];
+                    $simArt1.append(simArts1[z] + "<br>");
+                }
+            });
+
+            //Displays similar articles for second article
+            socket.on('similarArticles2', function(data) {
+                $("#sim2").empty();
+                $simArt2.append('Similar Articles:<br>');
+
+                for (var z = 0; z <= 2; z++) {
+                    simArts2[z] = data[z];
+                    $simArt2.append(simArts2[z] + "<br>");
+                }
+            });
             ///This is the code that displays the percentage match at the bottom of the website display
             socket.on('stats', function(data) {
 
