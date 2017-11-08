@@ -180,8 +180,17 @@
 
     </div>
     <div id="middle2">
-        <div id="sim1"><em>similar articles for URL1</em></div>
-        <div id="sim2"><em>similar articles for URL2</em></div>
+        
+        <div id="sim1"><div id="simHead1"></div>
+                       <em><a target="_blank" id="sim1linka" href="#">similar articles for URL1</a></em>
+                       <em><a target="_blank" id="sim1linkb" href="#"></a></em>
+                       <em><a target="_blank" id="sim1linkc" href="#"></a></em></div>
+        
+
+        <div id="sim2"><div id="simHead2"></div>
+                       <em><a target="_blank" id="sim2linka" href="#">similar articles for URL2</a></em>
+                       <em><a target="_blank" id="sim2linkb" href="#"></a></em>
+                       <em><a target="_blank" id="sim2linkc" href="#"></a></em></div>
 </div>
 
 
@@ -293,25 +302,93 @@
                 }
             });
 
+
+
+
+
+
+
             //Displays similar articles for first article
             socket.on('similarArticles1', function(data) {
-                $("#sim1").empty();
-                $simArt1.append('Similar Articles:<br>');
-
+                
                 for (var z = 0; z <= 2; z++) {
-                    simArts1[z] = data[z];
-                    $simArt1.append(simArts1[z] + "<br>");
+                 
+                    var substr = JSON.stringify(data[z]);
+                    var link = JSON.stringify(data[z]);
+                
+                    substr = substr.slice(0,23);
+                    substr += ' ...';
+
+                    $("#simHead1").text("Similar Articles");
+                    $("#simHead1").append("<br");
+
+                        if (z == 0) {
+                            $("#sim1linka").text("1. " + substr);
+                            //$("#sim1linka").append("<br>");
+                            $("#sim1linka").attr("href", data[z]);
+                            console.log("1: " + data[z]);
+                        }
+
+                        if (z == 1) {
+                            $("#sim1linkb").text("2. " + substr);
+                            //$("#sim1linkb").append("<br>");
+                            $("#sim1linkb").attr("href", data[z]);
+                            console.log("2: " + data[z]);
+                        }
+
+                        if (z == 2) {
+                            $("#sim1linkc").text("3. " + substr);
+                            //$("#sim1linkc").append("<br>");
+                            $("#sim1linkc").attr("href", data[z]);
+                            console.log("3: " + data[z]);
+                        }
+
                 }
+
             });
+
+
+
+
+
+
+
+
 
             //Displays similar articles for second article
             socket.on('similarArticles2', function(data) {
-                $("#sim2").empty();
-                $simArt2.append('Similar Articles:<br>');
-
                 for (var z = 0; z <= 2; z++) {
-                    simArts2[z] = data[z];
-                    $simArt2.append(simArts2[z] + "<br>");
+                 
+                    var substr = JSON.stringify(data[z]);
+                    var link = JSON.stringify(data[z]);
+                
+                    substr = substr.slice(0,23);
+                    substr += ' ...';
+
+                    $("#simHead2").text("Similar Articles");
+                    $("#simHead2").append("<br");
+
+                        if (z == 0) {
+                            $("#sim2linka").text("1. " + substr);
+                            //$("#sim2linka").append("<br>");
+                            $("#sim2linka").attr("href", data[z]);
+                            console.log("1: " + data[z]);
+                        }
+
+                        if (z == 1) {
+                            $("#sim2linkb").text("2. " + substr);
+                            //$("#sim2linkb").append("<br>");
+                            $("#sim2linkb").attr("href", data[z]);
+                            console.log("2: " + data[z]);
+                        }
+
+                        if (z == 2) {
+                            $("#sim2linkc").text("3. " + substr);
+                            //$("#sim2linkc").append("<br>");
+                            $("#sim2linkc").attr("href", data[z]);
+                            console.log("3: " + data[z]);
+                        }
+
                 }
             });
             ///This is the code that displays the percentage match at the bottom of the website display
