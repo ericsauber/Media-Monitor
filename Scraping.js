@@ -3,6 +3,7 @@ var cheerio = require('cheerio');
 var http = require('http');
 var fs = require('fs');
 var express = require('express');
+var stemmer = require('stemmer');
 
 var rawStory = "",
     all = "",
@@ -91,7 +92,7 @@ function analyzeArticle(data, x) {
                     if (rawStory.length) {
                         for (var i = 0, length = rawStory.length; i < length; i += 1) {
                             var matched = false,
-                                word = rawStory[i];
+                                word = stemmer(rawStory[i]);
 
                             for (var j = 0, numberOfWords = words.length; j < numberOfWords; j += 1) {
                                 if (words[j][0].toLowerCase() === word.toLowerCase()) {
@@ -113,7 +114,7 @@ function analyzeArticle(data, x) {
                     if (rawStory.length) {
                         for (var i = 0, length = rawStory.length; i < length; i += 1) {
                             var matched = false,
-                                word = rawStory[i];
+                                word = stemmer(rawStory[i]);
 
                             for (var j = 0, numberOfWords = words2.length; j < numberOfWords; j += 1) {
                                 if (words2[j][0].toLowerCase() === word.toLowerCase()) {
@@ -152,12 +153,6 @@ function analyzeArticle(data, x) {
                 title2 = $title.slice(0, $title.length/1.5).split(' ').join('+');
             }
 
-            //if ($ogTitle && $ogTitle.length) 
-                //  resObj.ogTitle = $ogTitle;
-
-            //if ($ogkeywords && $ogkeywords.length) 
-                //resObj.ogkeywords = $ogkeywords;
-            
             //console.log(resObj);
             if ($kwd)
                 resObj.keywords = $kwd;
@@ -309,6 +304,9 @@ function comparison() {
 function excludeWords(matched, word, x) {
     // Excludes words we don't want and words less than 3 chars long.
     // Is there a neater way for us to do this??
+
+    
+
     if (!matched && word.toLowerCase() !== 'this' &&
         word.toLowerCase() !== 'will' &&
         word.toLowerCase() !== 'most' &&
@@ -337,6 +335,9 @@ function excludeWords(matched, word, x) {
         word.toLowerCase() !== 'over' &&
         word.toLowerCase() !== 'her' &&
         word.toLowerCase() !== 'their' &&
+        word.toLowerCase() !== 'thei' &&
+        word.toLowerCase() !== 'this' &&
+        word.toLowerCase() !== 'thi' &&
         word.toLowerCase() !== 'she' &&
         word.toLowerCase() !== 'not' &&
         word.toLowerCase() !== 'who' &&
