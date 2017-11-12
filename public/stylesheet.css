@@ -1,15 +1,77 @@
-#middle {
-    width: 80%;
-    margin: auto;
-    opacity: 0.5;
+/*@import url(https://fonts.googleapis.com/css?family=Raleway:100);*/
+
+body {
+    background-color: black;
+    background-image: url("city2.jpg");
+    background-size: cover;
+    font-family: Raleway;
+    font-weight: bold;
+}
+
+.shadow {
+    box-shadow: 10 4px 2px -2px yellow;
+    /*opacity: 0.95;*/
+    z-index:1;
+}
+
+ul {
+    list-style-type: none;
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+    background-color: #464E5C;
+}
+
+li {
+    float: right;
+}
+
+form {
     text-align: center;
 }
 
-#middle2 {
-    width: 90%;
-    margin: auto;
-    opacity: 0.5;
+.smalllogo {
+    float: left;
+}
+
+.mainlogo {
+    clear: both;
     text-align: center;
+    padding-top: 100px;
+}
+
+li a {
+    display: block;
+    color: #888;
+    text-align: center;
+    padding: 20px 16px;
+    font-family: 'Raleway';
+    font-weight: bold;
+    font-size: 200%;
+    transition: all 0.5s ease;
+    text-decoration: none;
+}
+
+li a:hover {
+    background-color: #464E5C;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+#middle {
+    width: 80%;
+    margin: auto;
+    opacity: 0.95;
+    text-align: center;
+    visibility: hidden;
+}
+
+#middle2 {
+    width: 80%;
+    margin: auto;
+    opacity: 0.95;
+    text-align: center;
+    visibility: hidden;
 }
 
 #leftCol {
@@ -44,7 +106,7 @@
 #sim1 {
     float: left;
     padding: 15px;
-    opacity: 0.5;
+    opacity: 0.8;
     width: 50%;
     font-size: 18px;
     background-color: white;
@@ -53,95 +115,47 @@
 #sim2 {
     float: left;
     padding: 15px;
-    opacity: 0.5;
+    opacity: 0.8;
     width: 50%;
     font-size: 18px;
     background-color: white;
 }
 
+input[type=text] {
+    display: block;
+    padding: 10px;
+    width: 320px;
+    margin: 0 auto 10px;
+    font-family: Raleway, Helvetica;
+    border-radius: 10px;
+    border: 3px solid rgba(0, 0, 0, 0);
+}
+
 #urls {
-    clear: both;
-    margin: auto;
-    padding-top: 10px;
-    background-color: #6F99A1;
-    height: 120px;
-}
-
-body {
-    background-color: #7ED4EE;
-}
-
-input {
-    background-color: #BBEFFF;
-    margin: 4px;
-}
-
-.form-style-6 {
-    font: 95% Arial, Helvetica, sans-serif;
-    max-width: 400px;
-    margin: 10px auto;
-    padding: 16px;
-    background: #F7F7F7;
-}
-
-.form-style-6 input[type="text"],
-.form-style-6 input[type="date"],
-.form-style-6 input[type="datetime"],
-.form-style-6 input[type="email"],
-.form-style-6 input[type="number"],
-.form-style-6 input[type="search"],
-.form-style-6 input[type="time"],
-.form-style-6 input[type="url"],
-.form-style-6 textarea,
-.form-style-6 select {
-    -webkit-transition: all 0.30s ease-in-out;
-    -moz-transition: all 0.30s ease-in-out;
-    -ms-transition: all 0.30s ease-in-out;
-    -o-transition: all 0.30s ease-in-out;
-    outline: none;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
+    position: relative;
+    top: -25px;
     width: 50%;
-    background: #fff;
-    margin-bottom: 4%;
-    border: 1px solid #ccc;
-    padding: 3%;
-    color: #555;
-    font: 95% Arial, Helvetica, sans-serif;
+    opacity: 0.95;
+    margin: 0 auto;
+    padding: 10px;
 }
 
-.form-style-6 input[type="text"]:focus,
-.form-style-6 input[type="date"]:focus,
-.form-style-6 input[type="datetime"]:focus,
-.form-style-6 input[type="email"]:focus,
-.form-style-6 input[type="number"]:focus,
-.form-style-6 input[type="search"]:focus,
-.form-style-6 input[type="time"]:focus,
-.form-style-6 input[type="url"]:focus,
-.form-style-6 textarea:focus,
-.form-style-6 select:focus {
-    box-shadow: 0 0 5px #43D1AF;
-    padding: 3%;
-    border: 1px solid #43D1AF;
+input[type=submit] {
+    color: white;
+    font-family: Raleway, Gill Sans MT;
+    transition: all .2s ease;
+    border: 1px dashed rgba(0, 0, 0, 0);
+    border-radius: 10px;
+    padding: 10px;
+    border-bottom: 0px solid rgba(80, 80, 235, 1);
+    background: rgba(100, 100, 255, 1);
 }
 
-.form-style-6 input[type="submit"],
-.form-style-6 input[type="button"] {
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    width: 70%;
-    padding: 3%;
-    background: #43D1AF;
-    border-bottom: 2px solid #30C29E;
-    border-top-style: none;
-    border-right-style: none;
-    border-left-style: none;
-    color: #fff;
-}
-
-.form-style-6 input[type="submit"]:hover,
-.form-style-6 input[type="button"]:hover {
-    background: #2EBC99;
+input[type=submit]:hover {
+    -webkit-transition: all .2s ease;
+    -moz-transition: all .2s ease;
+    -ms-transition: all .2s ease;
+    -o-transition: all .2s ease;
+    transition: all .2s ease;
+    background: rgba(75, 75, 255, .5);
 }

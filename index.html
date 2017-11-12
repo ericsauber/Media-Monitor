@@ -1,63 +1,90 @@
-<!DOCTYPE HTML>
-
-<html>
+<!DOCTYPE html>
 
 <head>
+    <link rel="stylesheet" href="stylesheet.css">
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed" rel="stylesheet">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="stylesheet.css">
-    <title>Media Monitor</title>
-
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+   
+
+    <title>MEDIA monitor</title>
 </head>
 
-<body>
+<div class="shadow">
+    <ul>
+        <nav id="topBar">
+
+            <li><a href="contact.asp">CONTACT    </a></li>
+            <li><a href="about.asp">ABOUT</a></li>
+            <li><a href="default.asp">HOME</a></li>
+
+        </nav>
+
+        <div class="smalllogo">
+            <li>
+                <a href="#"><img style="width:60px; height:50px;" src="smalllogo.png" /></a>
+            </li>
+        </div>
+
+    </ul>
+</div>
 
 
-    <div id="logo" style="text-align:center"><img src="logo.png" /></div>
+<div id="logo" class="mainlogo">
+    <img style="text-align: center" src="MMlogo.png" />
+</div>
 
-    <div id="middle">
-        <div id="leftCol"><em>top ten words for URL1</em></div>
-        <div id="rightCol"><em>top ten words for URL2</em></div>
-    </div>
-    <div id="rating"><em>rating will go here once we calculate it</em></div>
+    <div id="urls">
 
-    </div>
-    <div id="middle2">
-
-        <div id="sim1">
-            <div id="simHead1"></div>
-            <em><a target="_blank" id="sim1linka" href="#">similar articles for URL1</a></em>
-            <em><a target="_blank" id="sim1linkb" href="#"></a></em>
-            <em><a target="_blank" id="sim1linkc" href="#"></a></em></div>
-
-
-        <div id="sim2">
-            <div id="simHead2"></div>
-            <em><a target="_blank" id="sim2linka" href="#">similar articles for URL2</a></em>
-            <em><a target="_blank" id="sim2linkb" href="#"></a></em>
-            <em><a target="_blank" id="sim2linkc" href="#"></a></em></div>
-    </div>
-
-
-    <div class="form-style-6" id="urls">
-        <form style="text-align:center" id="send-message">
-            <input size="35" style="padding-left: 3px" placeholder="URL 1" id="message"></input><br>
-            <input size="35" style="padding-left: 3px" placeholder="URL 2" id="message2"></input><br>
-            <input type="submit" value="Analyze"></input>
+        <form id="send-message">
+            <input type="text" placeholder="URL 1" id="message">
+            <input type="text" placeholder="URL 2" id="message2">
+            <input type="submit" value="Analyze">
         </form>
     </div>
 
 
+    <div id="middle">
+        <div id="leftCol"><em></em></div>
+        <div id="rightCol"><em></em></div>
+    </div>
+    
+    <div id="rating"><em></em></div>
 
-    <!-- JAVASCRIPT PART -->
+
+    <div id="middle2">
+
+        <div id="sim1">
+            <div id="simHead1"></div>
+            <em><a target="_blank" id="sim1linka" href="#"></a></em>
+            <em><a target="_blank" id="sim1linkb" href="#"></a></em>
+            <em><a target="_blank" id="sim1linkc" href="#"></a></em>
+        </div>
+
+
+        <div id="sim2">
+            <div id="simHead2"></div>
+            <em><a target="_blank" id="sim2linka" href="#"></a></em>
+            <em><a target="_blank" id="sim2linkb" href="#"></a></em>
+            <em><a target="_blank" id="sim2linkc" href="#"></a></em>
+        </div>
+    </div>
+
+    
+
+
+<!-- JAVASCRIPT PART -->
 
     <script>
         // this allows us to change html/css things with javascript
         var leftText = document.querySelector("#leftCol");
         var middleBox = document.querySelector("#middle");
+        var middleBox2 = document.querySelector("#middle2");
         var allBox = document.querySelector("#all");
         var rightText = document.querySelector("#rightCol");
         var rightText = document.querySelector("#rightCol");
@@ -70,9 +97,9 @@
         var simArts1 = [];
         var simArts2 = [];
 
-        $("#logo").hide(0).fadeIn(250);
-        $("#middle").hide(0).fadeIn(450);
-        $("#urls").hide(0).fadeIn(1000);
+        $("#logo").hide(0).fadeIn(350);
+        
+        $("#urls").hide(0).fadeIn(700);
 
         jQuery(function($) {
             var socket = io.connect();
@@ -80,7 +107,7 @@
             var $messageBox = $('#message');
             var $messageBox2 = $('#message2');
             var $left = $('#leftCol');
-            var $right = $('#rightCol'); // haven't used this one yet
+            var $right = $('#rightCol');
             var $rate = $('#rating');
             var $simArt1 = $('#sim1');
             var $simArt2 = $('#sim2');
@@ -96,10 +123,15 @@
 
             socket.on('new message', function(data) {
 
-                // unnecesary things to make it look fancy
-                $("#leftCol").empty()
+                
+                
+                $("#logo").fadeOut(250);
 
-                leftText.style.opacity = '1';
+            
+                middleBox.style.visibility = "visible";
+                leftText.style.opacity = '0.9';
+               
+                $("#middle").css("padding-top", "-25px");
                 middleBox.style.opacity = '1';
                 middleBox.style.textAlign = 'left';
                 rating.style.padding = '15px';
@@ -114,19 +146,19 @@
 
                 for (var z = 0; z < max; z++) {
                     topTen[z] = data[z];
-                    //console.log(topTen[z][0]);
+                   
                     $left.append((z + 1) + ". " + topTen[z][0] + " " + topTen[z][1] + "<br>");
                 }
-
 
 
             });
 
 
             socket.on('new message2', function(data) {
-                $("#rightCol").empty();
 
-                leftText.style.opacity = '1';
+
+                middleBox2.style.visibility = "visible";
+                rightText.style.opacity = '0.9';
                 middleBox.style.opacity = '1';
                 middleBox.style.textAlign = 'left';
                 rating.style.padding = '15px';
@@ -140,7 +172,7 @@
 
                 for (var z = 0; z < max; z++) {
                     topTen2[z] = data[z];
-                    //console.log(topTen2[z][0]);
+                   
                     $right.append((z + 1) + ". " + topTen2[z][0] + " " + topTen2[z][1] + "<br>");
                 }
             });
