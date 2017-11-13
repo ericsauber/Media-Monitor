@@ -1,3 +1,15 @@
+To run code:
+
+1.) Clone repository
+
+2.) Run scraping.js in your IDE
+
+3.) Enter 'localhost:3000' in your browser
+
+4.) Input articles into the boxes and analyze
+
+5.) Magic
+
 Current changes:
 
 1.) Fixed the word returns such as "aren" due to the apostrophe issue (aren't should now be a full word when found)
