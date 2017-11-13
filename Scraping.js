@@ -149,8 +149,14 @@ function analyzeArticle(data, x) {
 
             if (x === 0) {
                 title1 = $title.slice(0, $title.length/1.5).split(' ').join('+');
+                if (title1 === "") {
+                    title1 = $desc.slice(0, $desc.length/1.5).split(' ').join('+');
+                } 
             } else {
                 title2 = $title.slice(0, $title.length/1.5).split(' ').join('+');
+                if (title2 === "") {
+                    title2 = $desc.slice(0, $desc.length/1.5).split(' ').join('+');
+                }
             }
 
             //console.log(resObj);
@@ -200,7 +206,7 @@ function similarArticles(title, x) {
     //Queries google using the title of the article
     var query = 'https://www.google.com/search?q=' + title;
     var done1 = 0, done2 = 0;
-
+    
     // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
     request(query, function (err, resp, body) {
         
@@ -220,7 +226,7 @@ function similarArticles(title, x) {
                 url = url.replace('/url?q=', '');
 
                 //Adds first three urls to list if they're not from youtube or a search
-                if (url.indexOf('youtube') === -1 && url.indexOf('search') === -1 && i <= 2) {
+                if (url.indexOf('youtube') === -1 && url.indexOf('search') === -1 && url.indexOf('free') === -1 && i <= 2) {
 
                     //Makes sure original article doesn't show in similar articles
                     if (x === 0 && url.indexOf(titleSource1) === -1) {
@@ -288,7 +294,11 @@ function comparison() {
 
     // Calculated percentage match. Sent directly to the HTML afterwards
     percMatch = simCount / overallTot * 100;
-    var percMatchString = percMatch.toFixed(2) + '%';
+    if (percMatch >= 35) {
+        var percMatchString = percMatch.toFixed(2) + '% - GOOD Match';
+    } else {
+        var percMatchString = percMatch.toFixed(2) + '% - BAD Match';
+    }
 
     //Data double checking
     ///console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);

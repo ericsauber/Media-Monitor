@@ -10,7 +10,22 @@
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-   
+    <script>
+        function getHost(URL) {
+            var host;
+
+            if (URL.indexOf('://') > -1) {
+                host = URL.split('/')[2];
+            } else {
+                host = URL.split('/')[0];
+            }
+
+            host = host.split(':')[0];
+            host = host.split('?')[0];
+
+            return host;
+        }
+    </script>
 
     <title>MEDIA monitor</title>
 </head>
@@ -195,10 +210,9 @@
                     }
 
                     link2 = link.slice(0, spot);
-                    substr = substr.slice(0, 23);
-                    substr += ' ...';
+                    substr = getHost(substr);
 
-                    $("#simHead1").text("Similar Articles");
+                    $("#simHead1").text("Similar Stories");
                     $("#simHead1").append("<br");
 
                     if (z == 0) {
@@ -242,10 +256,9 @@
                     }
 
                     link2 = link.slice(0, spot);
-                    substr = substr.slice(0, 23);
-                    substr += ' ...';
+                    substr = getHost(substr);
 
-                    $("#simHead2").text("Similar Articles");
+                    $("#simHead2").text("Similar Stories");
                     $("#simHead2").append("<br");
 
                     if (z == 0) {
