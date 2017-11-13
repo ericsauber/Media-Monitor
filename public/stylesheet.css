@@ -22,6 +22,11 @@ ul {
     background-color: #464E5C;
 }
 
+#topBar {
+
+    padding-right:15px;
+}
+
 li {
     float: right;
 }
