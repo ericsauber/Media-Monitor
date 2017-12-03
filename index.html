@@ -88,6 +88,14 @@
             <em><a target="_blank" id="sim2linkb" href="#"></a></em>
             <em><a target="_blank" id="sim2linkc" href="#"></a></em>
         </div>
+
+        <iframe id="leftHost">
+
+        </iframe>
+
+        <iframe id="rightHost">
+
+        </iframe>
     </div>
 
     
@@ -107,6 +115,8 @@
         var leftSimArt1 = document.querySelector("#sim1");
         var rightSimArt2 = document.querySelector("#sim2");
         var urlBox = document.querySelector("#urls");
+        var leftHost = document.querySelector("#leftHost");
+        var rightHost = document.querySelector("#rightHost");
         var topTen = [];
         var topTen2 = [];
         var simArts1 = [];
@@ -298,6 +308,16 @@
                 $rate.append("Percent matching: " + data + "<br>");
 
             });
+
+            socket.on('leftStory', function(data) {
+                leftHost.src = data;
+                leftHost.visibility = 'visible';
+            });
+
+            socket.on('rightStory', function(data){
+                rightHost.src = data;
+                leftHost.visibility = 'visible';
+            })
         });
     </script>
 </body>
