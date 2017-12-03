@@ -10,6 +10,12 @@
     "express":"4.16.1",
     "stemmer":"latest"
   },
+  "scripts": {
+    "start": "node Scraping.js"
+  },
+  "engines": {
+    "node": "6.11.3"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ericsauber/word-counter.git"
