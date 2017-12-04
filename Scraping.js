@@ -72,10 +72,10 @@ function analyzeArticle(data, x) {
 
 
     if (x === 0) {
-        rawLeft = "https://www.google.com/search?q=%" + URL;
+        rawLeft = URL;
         titleSource1 = getHost(URL);
     } else {
-        rawRight = "https://www.google.com/search?q=%" + URL;
+        rawRight = URL;
         titleSource2 = getHost(URL);
     }
 
