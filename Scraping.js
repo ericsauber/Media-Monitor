@@ -9,7 +9,7 @@ var rawStory = "",
     all = "",
     text2 = "",
     keyWords = "";
-var sortedWords, URL, words, words2;
+var sortedWords, URL, words, words2, rawLeft, rawRight;
 var sent1 = 0,
     sent2 = 0;
 var title1 = '', 
@@ -36,8 +36,6 @@ app.use(express.static(__dirname + '/public'));
 server.listen(process.env.PORT || 3000);
 console.log('Server is running..');
 
-
-
 // socket.io - everything is running inside this 
 io.sockets.on('connection', function (socket) {
 
@@ -53,7 +51,7 @@ io.sockets.on('connection', function (socket) {
 
     });
 
-}); // end of socket.io 
+}); // end of socket.io
 
 function analyzeArticle(data, x) {
     // whats getting sent from client is saved as URL
@@ -62,9 +60,11 @@ function analyzeArticle(data, x) {
     words2 = [];
 
     if (x === 0) {
+        rawLeft = URL + '.html';
         titleSource1 = getHost(URL);
         console.log(titleSource1);
     } else {
+        rawRight = URL + '.html';
         titleSource2 = getHost(URL);
         console.log(titleSource2);
     }
@@ -108,6 +108,7 @@ function analyzeArticle(data, x) {
                     //Sort and get top 10 words
                     words.sort(compareSecondColumn);
                     //words = words.slice(0, 10);
+                    io.sockets.emit('leftStory',rawLeft);
 
                 } else {
 
@@ -130,6 +131,7 @@ function analyzeArticle(data, x) {
                     //Sort and get top 10 words
                     words2.sort(compareSecondColumn);
                     //words2 = words2.slice(0, 10);
+                    io.sockets.emit('rightStory',rawRight);
                 }
             });
 
