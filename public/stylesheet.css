@@ -10,7 +10,6 @@ body {
 
 .shadow {
     box-shadow: 10 4px 2px -2px yellow;
-    /*opacity: 0.95;*/
     z-index:1;
 }
 
@@ -18,14 +17,49 @@ ul {
     list-style-type: none;
     position: fixed;
     width: 100%;
+    
     overflow: hidden;
     background-color: #464E5C;
 }
 
 #topBar {
-
-    padding-right:15px;
+    padding:10px;
+    
+    z-index:1;
 }
+
+#center {
+
+    background-color: white;
+    opacity: 0.9;
+    padding: 25px;
+    width: 60%;
+    text-align: center;
+    margin:auto;
+
+}
+
+
+
+li a {
+    display: block;
+    color: #888;
+    text-align: center;
+    padding-right: 20px;
+    font-family: 'Raleway';
+    font-weight: bold;
+    font-size: 200%;
+    transition: all 0.5s ease;
+    text-decoration: none;
+    z-index:1;
+}
+
+li a:hover {
+    background-color: #464E5C;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
 
 li {
     float: right;
@@ -42,33 +76,16 @@ form {
 .mainlogo {
     clear: both;
     text-align: center;
-    padding-top: 100px;
+    padding-top: 80px; 
 }
-
-li a {
-    display: block;
-    color: #888;
-    text-align: center;
-    padding: 20px 16px;
-    font-family: 'Raleway';
-    font-weight: bold;
-    font-size: 200%;
-    transition: all 0.5s ease;
-    text-decoration: none;
-}
-
-li a:hover {
-    background-color: #464E5C;
-    color: #FFFFFF;
-    text-decoration: none;
-}
-
 #middle {
     width: 80%;
     margin: auto;
     opacity: 0.95;
     text-align: center;
     visibility: hidden;
+    z-index:-1;
+   
 }
 
 #middle2 {
@@ -77,6 +94,8 @@ li a:hover {
     opacity: 0.95;
     text-align: center;
     visibility: hidden;
+    z-index:-1;
+    
 }
 
 #leftCol {
@@ -86,6 +105,8 @@ li a:hover {
     width: 50%;
     font-size: 18px;
     background-color: azure;
+    
+   
 }
 
 #rightCol {
@@ -94,7 +115,9 @@ li a:hover {
     opacity: 0.5;
     width: 50%;
     font-size: 18px;
-    background-color: white;
+    background-color: white;z-index:-1;
+    
+   
 }
 
 #rating {
@@ -143,6 +166,7 @@ input[type=text] {
     opacity: 0.95;
     margin: 0 auto;
     padding: 10px;
+   
 }
 
 input[type=submit] {
@@ -163,4 +187,27 @@ input[type=submit]:hover {
     -o-transition: all .2s ease;
     transition: all .2s ease;
     background: rgba(75, 75, 255, .5);
+}
+
+.pages {
+
+    width:48%;
+    height:400px;
+}
+
+#middleframe { 
+    width:90%;
+    margin:auto;
+    
+
+}
+
+#leftHost {
+
+    visibility:hidden;
+}
+
+#rightHost {
+
+    visibility:hidden;
 }

@@ -5,6 +5,7 @@
     <link href="https://fonts.googleapis.com/css?family=Oswald" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed" rel="stylesheet">
+
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
@@ -13,11 +14,11 @@
         function getHost(URL) {
             var host;
 
-            if (URL.indexOf('://') > -1) 
+            if (URL.indexOf('://') > -1) {
                 host = URL.split('/')[2];
-            else 
+            } else {
                 host = URL.split('/')[0];
-            
+            }
 
             host = host.split(':')[0];
             host = host.split('?')[0];
@@ -41,7 +42,7 @@
 
         <div class="smalllogo">
             <li>
-                <a href="#"><img style="width:60px; height:50px;" src="smalllogo.png" /></a>
+                <a href="#"><img style="width:50px; height:40px;" src="smalllogo.png" /></a>
             </li>
         </div>
 
@@ -53,49 +54,14 @@
     <img style="text-align: center" src="MMlogo.png" />
 </div>
 
-    <div id="urls">
+<div id="center">
 
-        <form id="send-message">
-            <input type="text" placeholder="URL 1" id="message">
-            <input type="text" placeholder="URL 2" id="message2">
-            <input type="submit" value="Analyze">
-        </form>
-    </div>
+    <h3> About </h3>
+    <p> This is our about page</p>
 
+</div>
 
-    <div id="middle">
-        <div id="leftCol"><em></em></div>
-        <div id="rightCol"><em></em></div>
-    </div>
-    
-    <div id="rating"><em></em></div>
-
-
-    <div id="middle2">
-
-        <div id="sim1">
-            <div id="simHead1"></div>
-            <em><a target="_blank" id="sim1linka" href="#"></a></em>
-            <em><a target="_blank" id="sim1linkb" href="#"></a></em>
-            <em><a target="_blank" id="sim1linkc" href="#"></a></em>
-        </div>
-
-
-        <div id="sim2">
-            <div id="simHead2"></div>
-            <em><a target="_blank" id="sim2linka" href="#"></a></em>
-            <em><a target="_blank" id="sim2linkb" href="#"></a></em>
-            <em><a target="_blank" id="sim2linkc" href="#"></a></em>
-        </div>
-
-        
-    </div>
-
-        <div id="middleframe">
-            <iframe class="pages" id="leftHost"></iframe>
-            <iframe class="pages" id="rightHost"></iframe>
-        <div>
-
+   
     
 
 
@@ -113,17 +79,14 @@
         var leftSimArt1 = document.querySelector("#sim1");
         var rightSimArt2 = document.querySelector("#sim2");
         var urlBox = document.querySelector("#urls");
-        var leftHost = document.querySelector("#leftHost");
-        var rightHost = document.querySelector("#rightHost");
-        var middleHost = document.querySelector("#middleframe");
         var topTen = [];
         var topTen2 = [];
         var simArts1 = [];
         var simArts2 = [];
 
-        $("#logo").hide(0).fadeIn(350);
+       //$("#logo").hide(0).fadeIn(350);
         
-        $("#urls").hide(0).fadeIn(700);
+        $("#center").hide(0).fadeIn(600);
 
         jQuery(function($) {
             var socket = io.connect();
@@ -171,11 +134,12 @@
                 for (var z = 0; z < max; z++) {
                     topTen[z] = data[z];
                    
-                    $left.append((z + 1) + ". " + topTen[z] + "<br>");
+                    $left.append((z + 1) + ". " + topTen[z][0] + " " + topTen[z][1] + "<br>");
                 }
 
 
             });
+
 
             socket.on('new message2', function(data) {
 
@@ -196,7 +160,7 @@
                 for (var z = 0; z < max; z++) {
                     topTen2[z] = data[z];
                    
-                    $right.append((z + 1) + ". " + topTen2[z] + "<br>");
+                    $right.append((z + 1) + ". " + topTen2[z][0] + " " + topTen2[z][1] + "<br>");
                 }
             });
 
@@ -306,20 +270,6 @@
                 $rate.append("Percent matching: " + data + "<br>");
 
             });
-
-            socket.on('leftStory', function(data) {
-                
-                leftHost.style.visibility = 'visible';
-                leftHost.src = data;
-                
-            });
-
-            socket.on('rightStory', function(data){
-                
-                rightHost.style.visibility = 'visible';
-                rightHost.src = data;
-                
-            })
         });
     </script>
 </body>

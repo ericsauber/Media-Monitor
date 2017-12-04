@@ -9,7 +9,7 @@ var rawStory = "",
     all = "",
     text2 = "",
     keyWords = "";
-var sortedWords, URL, words, words2, rawLeft, rawRight;
+var sortedWords, URL, words, words2, rawLeft, rawRight, wordsOg, words2Og;
 var sent1 = 0,
     sent2 = 0;
 var title1 = '', 
@@ -18,6 +18,10 @@ var articles1 = [],
     articles2 = [];
 var titleSource1 = '', 
     titleSource2 = '';
+var key, original_word;
+
+var map = {};
+var map2 = {};
 
 app = express();
 
@@ -29,9 +33,16 @@ app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
+app.get('/about', function (req, res) {
+    res.sendFile(__dirname + '/about.html');
+});
+
+app.get('/contact', function (req, res) {
+    res.sendFile(__dirname + '/contact.html');
+});
+
 // includes pictures for html file and other things like css file 
 app.use(express.static(__dirname + '/public'));
-
 
 server.listen(process.env.PORT || 3000);
 console.log('Server is running..');
@@ -42,13 +53,11 @@ io.sockets.on('connection', function (socket) {
     socket.on('send message', function (data) {
 
         analyzeArticle(data, 0);
-
     });
 
     socket.on('send message2', function (data) {
 
         analyzeArticle(data, 1);
-
     });
 
 }); // end of socket.io
@@ -58,15 +67,16 @@ function analyzeArticle(data, x) {
     URL = data;
     words = [];
     words2 = [];
+    wordsOg = [];
+    words2Og = [];
+
 
     if (x === 0) {
-        rawLeft = URL + '.html';
+        rawLeft = URL;
         titleSource1 = getHost(URL);
-        console.log(titleSource1);
     } else {
-        rawRight = URL + '.html';
+        rawRight = URL;
         titleSource2 = getHost(URL);
-        console.log(titleSource2);
     }
 
     // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
@@ -93,6 +103,7 @@ function analyzeArticle(data, x) {
                         for (var i = 0, length = rawStory.length; i < length; i += 1) {
                             var matched = false,
                                 word = stemmer(rawStory[i]);
+                                var original = rawStory[i];
 
                             for (var j = 0, numberOfWords = words.length; j < numberOfWords; j += 1) {
                                 if (words[j][0].toLowerCase() === word.toLowerCase()) {
@@ -101,14 +112,12 @@ function analyzeArticle(data, x) {
                                 }
                             }
 
-                            excludeWords(matched, word, 0);
+                            excludeWords(matched, word, original, 0);
                         }
                     }
 
                     //Sort and get top 10 words
                     words.sort(compareSecondColumn);
-                    //words = words.slice(0, 10);
-                    io.sockets.emit('leftStory',rawLeft);
 
                 } else {
 
@@ -116,6 +125,7 @@ function analyzeArticle(data, x) {
                         for (var i = 0, length = rawStory.length; i < length; i += 1) {
                             var matched = false,
                                 word = stemmer(rawStory[i]);
+                                var original = rawStory[i];
 
                             for (var j = 0, numberOfWords = words2.length; j < numberOfWords; j += 1) {
                                 if (words2[j][0].toLowerCase() === word.toLowerCase()) {
@@ -124,14 +134,13 @@ function analyzeArticle(data, x) {
                                 }
                             }
 
-                            excludeWords(matched, word, 1);
+                            excludeWords(matched, word, original, 1);
                         }
                     }
 
                     //Sort and get top 10 words
                     words2.sort(compareSecondColumn);
-                    //words2 = words2.slice(0, 10);
-                    io.sockets.emit('rightStory',rawRight);
+                    
                 }
             });
 
@@ -161,20 +170,36 @@ function analyzeArticle(data, x) {
                 }
             }
 
-            //console.log(resObj);
+
             if ($kwd)
                 resObj.keywords = $kwd;
 
-            console.log(resObj);
+            // swap out original word
+            if (x===0) {
+                for (var y = 0; y < 10; y++) {
+                   
+                    key = words[y][0];
+                    original_word = map[key];
+                    wordsOg.push(original_word);
+                }
+            }
+            else {
+                for (var y = 0; y < 10; y++) {
+                   
+                    key = words2[y][0];
+                    original_word = map2[key];
+                    words2Og.push(original_word);
+                }
+            }
 
-
-
-            if (x === 0) {
-                sent1 = 1;
-                io.sockets.emit('new message', words);
-            } else {
+            if (x === 0) 
+                sent1 = 1; 
+            else {
                 sent2 = 1;
-                io.sockets.emit('new message2', words2);
+                io.sockets.emit('new message', wordsOg);
+                io.sockets.emit('new message2', words2Og);
+                io.sockets.emit('leftStory',rawLeft);
+                io.sockets.emit('rightStory',rawRight);
             }
 
             //Both URLs must be finished being scraped for comparison to execute.
@@ -233,27 +258,21 @@ function similarArticles(title, x) {
                     //Makes sure original article doesn't show in similar articles
                     if (x === 0 && url.indexOf(titleSource1) === -1) {
                         articles1[i] = url;
-                        if (i === 2) {
-                            io.sockets.emit('similarArticles1', articles1);
-                            console.log(articles1);
-                        }
+                        
                         i++;
                     } else if (x === 1 && url.indexOf(titleSource2) === -1) {
                         articles2[i] = url;
                         if (i === 2) {
+                            io.sockets.emit('similarArticles1', articles1);
                             io.sockets.emit('similarArticles2', articles2);
-                            console.log(articles2);
                         }
                         i++;
-                    }
+                    } 
                 }
             });
         }
     });
-}
-            
-            
-
+}       
 
 function comparison() {
 
@@ -264,13 +283,10 @@ function comparison() {
     var percMatch;
     var shortest;
 
-    ///console.log("Before  = "+words.length+","+words2.length);
-
-    if (words.length <= words2.length && words.length !== 0) shortest = words.length;
-    else shortest = words2.length;
-
-
-    ///console.log("Shortest  = " + shortest+","+words.length+","+words2.length);
+    if (words.length <= words2.length && words.length !== 0) 
+        shortest = words.length;
+    else 
+        shortest = words2.length;
 
     // Finds total amount of words in top 10 for first URL
     for (i = 0; i < shortest; i++) {
@@ -302,23 +318,16 @@ function comparison() {
         var percMatchString = percMatch.toFixed(2) + '% - BAD Match';
     }
 
-    //Data double checking
-    ///console.log("The similarity rating is:" + simCount + "\nThe Totals in 1,2, both order: " + tot1 + ", " + tot2 + ", " + overallTot);
-    ///console.log("Percentage match is: " + percMatch);
-
-    ///Socket for the percentage match, send to the HTML
-    io.sockets.emit('stats', percMatchString);
-
     sent1 = 0;
     sent2 = 0;
+
+    // Socket for the percentage match, send to the HTML
+    io.sockets.emit('stats', percMatchString);
 }
 
-function excludeWords(matched, word, x) {
-    // Excludes words we don't want and words less than 3 chars long.
-    // Is there a neater way for us to do this??
-
+function excludeWords(matched, word, original, x) {
     
-
+    // Excludes words we don't want and words less than 3 chars long.
     if (!matched && word.toLowerCase() !== 'this' &&
         word.toLowerCase() !== 'will' &&
         word.toLowerCase() !== 'most' &&
@@ -380,9 +389,13 @@ function excludeWords(matched, word, x) {
         word.length >= 3) {
 
         if (x === 0) {
+    
             words.push([word.toLowerCase(), 1]);
+            map[word] = original;
+
         } else {
             words2.push([word.toLowerCase(), 1]);
+            map2[word] = original;
         }
     }
 }
@@ -394,3 +407,4 @@ function compareSecondColumn(b, a) {
     else
         return (a[1] < b[1]) ? -1 : 1;
 }
+
