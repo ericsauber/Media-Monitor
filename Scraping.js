@@ -391,6 +391,7 @@ function excludeWords(matched, word, original, x) {
         word.toLowerCase() !== 'being' &&
         word.toLowerCase() !== 'your' &&
         word.toLowerCase() !== "there's" &&
+        word.toLowerCase() !== "would" &&
         word.length >= 3) {
 
         if (x === 0) {
