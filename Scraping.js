@@ -192,11 +192,12 @@ function analyzeArticle(data, x) {
                 }
             }
 
-            if (x === 0) 
+            if (x === 0) {
                 sent1 = 1; 
-            else {
-                sent2 = 1;
                 io.sockets.emit('new message', wordsOg);
+            } else {
+                sent2 = 1;
+                
                 io.sockets.emit('new message2', words2Og);
                 io.sockets.emit('leftStory',rawLeft);
                 io.sockets.emit('rightStory',rawRight);
@@ -233,6 +234,8 @@ function similarArticles(title, x) {
     //Queries google using the title of the article
     var query = 'https://www.google.com/search?q=' + title;
     var done1 = 0, done2 = 0;
+    articles1 = [];
+    articles2 = [];
     
     // Specifies the request to have two fields, a string that is used for the Web page to scrape, and a function, specified below
     request(query, function (err, resp, body) {
@@ -258,12 +261,14 @@ function similarArticles(title, x) {
                     //Makes sure original article doesn't show in similar articles
                     if (x === 0 && url.indexOf(titleSource1) === -1) {
                         articles1[i] = url;
+                        if (i === 2) 
+                            io.sockets.emit('similarArticles1', articles1);
                         
                         i++;
                     } else if (x === 1 && url.indexOf(titleSource2) === -1) {
                         articles2[i] = url;
                         if (i === 2) {
-                            io.sockets.emit('similarArticles1', articles1);
+                            //io.sockets.emit('similarArticles1', articles1);
                             io.sockets.emit('similarArticles2', articles2);
                         }
                         i++;
@@ -280,7 +285,7 @@ function comparison() {
     var tot1 = 0;
     var tot2 = 0;
     var overallTot;
-    var percMatch;
+    var percMatch = 0;
     var shortest;
 
     if (words.length <= words2.length && words.length !== 0) 
