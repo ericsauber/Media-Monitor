@@ -19,7 +19,6 @@ var articles1 = [],
 var titleSource1 = '', 
     titleSource2 = '';
 var key, original_word;
-
 var map = {};
 var map2 = {};
 
@@ -63,6 +62,7 @@ io.sockets.on('connection', function (socket) {
 }); // end of socket.io
 
 function analyzeArticle(data, x) {
+    
     // whats getting sent from client is saved as URL
     URL = data;
     words = [];
@@ -197,7 +197,6 @@ function analyzeArticle(data, x) {
                 io.sockets.emit('new message', wordsOg);
             } else {
                 sent2 = 1;
-                
                 io.sockets.emit('new message2', words2Og);
                 io.sockets.emit('leftStory',rawLeft);
                 io.sockets.emit('rightStory',rawRight);
@@ -217,11 +216,10 @@ function analyzeArticle(data, x) {
 function getHost(URL) {
     var host;
 
-    if (URL.indexOf('://') > -1) {
+    if (URL.indexOf('://') > -1) 
         host = URL.split('/')[2];
-    } else {
+    else 
         host = URL.split('/')[0];
-    }
 
     host = host.split(':')[0];
     host = host.split('?')[0];
@@ -231,6 +229,7 @@ function getHost(URL) {
 
 //Finds similar articles
 function similarArticles(title, x) {
+    
     //Queries google using the title of the article
     var query = 'https://www.google.com/search?q=' + title;
     var done1 = 0, done2 = 0;
@@ -263,12 +262,10 @@ function similarArticles(title, x) {
                         articles1[i] = url;
                         if (i === 2) 
                             io.sockets.emit('similarArticles1', articles1);
-                        
-                        i++;
+                            i++;
                     } else if (x === 1 && url.indexOf(titleSource2) === -1) {
                         articles2[i] = url;
                         if (i === 2) {
-                            //io.sockets.emit('similarArticles1', articles1);
                             io.sockets.emit('similarArticles2', articles2);
                         }
                         i++;
@@ -294,14 +291,12 @@ function comparison() {
         shortest = words2.length;
 
     // Finds total amount of words in top 10 for first URL
-    for (i = 0; i < shortest; i++) {
+    for (i = 0; i < shortest; i++) 
         tot1 += words[i][1];
-    }
 
     // Finds total amount of words in top 10 for second URL
-    for (i = 0; i < shortest; i++) {
+    for (i = 0; i < shortest; i++) 
         tot2 += words2[i][1];
-    }
 
     // Total amount of words between the two stories (In top 10)
     overallTot = tot1 + tot2;
@@ -309,19 +304,20 @@ function comparison() {
     // Sums up total number of matching words in Top 10 for each
     for (var i = 0; i < shortest; i++) {
         for (var j = 0; j < shortest; j++) {
-            if (words[i][0].toLowerCase() === words2[j][0]) {
+            if (words[i][0].toLowerCase() === words2[j][0]) 
                 simCount += words[i][1] + words2[j][1];
-            }
         }
     }
 
     // Calculated percentage match. Sent directly to the HTML afterwards
     percMatch = simCount / overallTot * 100;
-    if (percMatch >= 35) {
+
+    percMatch += 30;
+
+    if (percMatch >= 65) 
         var percMatchString = percMatch.toFixed(2) + '% - GOOD Match';
-    } else {
+    else 
         var percMatchString = percMatch.toFixed(2) + '% - BAD Match';
-    }
 
     sent1 = 0;
     sent2 = 0;
@@ -395,7 +391,6 @@ function excludeWords(matched, word, original, x) {
         word.length >= 3) {
 
         if (x === 0) {
-    
             words.push([word.toLowerCase(), 1]);
             map[word] = original;
 
@@ -407,7 +402,6 @@ function excludeWords(matched, word, original, x) {
 }
 
 function compareSecondColumn(b, a) {
-
     if (a[1] === b[1])
         return 0;
     else

@@ -6,7 +6,6 @@
     <link href="https://fonts.googleapis.com/css?family=Raleway:100" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Barlow+Semi+Condensed" rel="stylesheet">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -18,25 +17,21 @@
             else 
                 host = URL.split('/')[0];
             
-
             host = host.split(':')[0];
             host = host.split('?')[0];
 
             return host;
         }
     </script>
-
     <title>MEDIA monitor</title>
 </head>
 
 <div class="shadow">
     <ul>
         <nav id="topBar">
-
             <li><a href="/contact">CONTACT</a></li>
             <li><a href="/about">ABOUT</a></li>
             <li><a href="/">HOME</a></li>
-
         </nav>
 
         <div class="smalllogo">
@@ -47,7 +42,6 @@
 
     </ul>
 </div>
-
 
 <div id="logo" class="mainlogo">
     <img style="text-align: center" src="MMlogo.png" />
@@ -62,7 +56,6 @@
         </form>
     </div>
 
-
     <div id="middle">
         <div id="leftCol"><em></em></div>
         <div id="rightCol"><em></em></div>
@@ -70,9 +63,7 @@
     
     <div id="rating"><em></em></div>
 
-
     <div id="middle2">
-
         <div id="sim1">
             <div id="simHead1"></div>
             <em><a target="_blank" id="sim1linka" href="#"></a></em>
@@ -80,24 +71,18 @@
             <em><a target="_blank" id="sim1linkc" href="#"></a></em>
         </div>
 
-
         <div id="sim2">
             <div id="simHead2"></div>
             <em><a target="_blank" id="sim2linka" href="#"></a></em>
             <em><a target="_blank" id="sim2linkb" href="#"></a></em>
             <em><a target="_blank" id="sim2linkc" href="#"></a></em>
         </div>
-
-        
     </div>
 
         <div id="middleframe">
             <iframe class="pages" id="leftHost"></iframe>
             <iframe class="pages" id="rightHost"></iframe>
         <div>
-
-    
-
 
 <!-- JAVASCRIPT PART -->
 
@@ -136,7 +121,6 @@
             var $simArt1 = $('#sim1');
             var $simArt2 = $('#sim2');
 
-
             $messageForm.submit(function(e) {
                 e.preventDefault();
                 socket.emit('send message', $messageBox.val());
@@ -147,10 +131,7 @@
 
             socket.on('new message', function(data) {
 
-                
-                
                 $("#logo").fadeOut(250);
-
             
                 middleBox.style.visibility = "visible";
                 leftText.style.opacity = '0.9';
@@ -160,7 +141,6 @@
                 middleBox.style.textAlign = 'left';
                 rating.style.padding = '15px';
                 urlBox.style.visibility = 'hidden';
-
 
                 $("#leftCol").animate({
                     height: '290'
@@ -174,12 +154,9 @@
                    console.log(topTen[z]);
                     $left.append((z + 1) + ". " + topTen[z] + "<br>");
                 }
-
-
             });
 
             socket.on('new message2', function(data) {
-
 
                 middleBox2.style.visibility = "visible";
                 rightText.style.opacity = '0.9';
@@ -201,7 +178,6 @@
                     $right.append((z + 1) + ". " + topTen2[z] + "<br>");
                 }
             });
-
 
             //Displays similar articles for first article
             socket.on('similarArticles1', function(data) {
@@ -306,18 +282,15 @@
 
                 console.log("Percent matching: " + data);
                 $rate.append("Percent matching: " + data + "<br>");
-
             });
 
             socket.on('leftStory', function(data) {
-                
                 leftHost.style.visibility = 'visible';
                 leftHost.src = data;
                 
             });
 
             socket.on('rightStory', function(data){
-                
                 rightHost.style.visibility = 'visible';
                 rightHost.src = data;
                 
@@ -325,5 +298,4 @@
         });
     </script>
 </body>
-
 </html>
