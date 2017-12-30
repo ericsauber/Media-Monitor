@@ -1,23 +1,8 @@
-To run code:
+www.media-monitor.herokuapp.com
 
-1.) Clone repository
 
-2.) Run scraping.js in your IDE
+Compares two web pages and returns a similarity rating.
 
-3.) Enter 'localhost:3000' in your browser
+Uses Node, Express, Socket.io, cheerio to scrape both web pages. After scraping, it determines the top ten most used words of each webpage and compares it with the corresponding URL. 
 
-4.) Input articles into the boxes and analyze
-
-5.) Magic
-
-Current changes:
-
-1.) Fixed the word returns such as "aren" due to the apostrophe issue (aren't should now be a full word when found)
-
-2.) Now added a total for each story (data is used only to find total for both currently)
-
-3.) Now added a total for both stories combined (used to find percentage match)
-
-4.) Now added a similarity rating for both stories (used to find percentage match)
-
-5.) Now added a percentage match (displayed on the page at the same time the 2nd URL info is posted)
+Disclaimer: This was a group project for CSE3311 - Object Oriented Engineering. There are still some minor bugs but it works mostly. 
