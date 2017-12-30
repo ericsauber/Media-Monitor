@@ -1,4 +1,4 @@
-www.media-monitor.herokuapp.com
+http://www.media-monitor.herokuapp.com
 
 
 Compares two web pages and returns a similarity rating.
