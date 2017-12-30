@@ -1,4 +1,4 @@
-media-monitor.herokuapp.com
+Hosted @ media-monitor.herokuapp.com
 
 
 Compares two web pages and returns a similarity rating.
